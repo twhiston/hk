@@ -1,0 +1,23 @@
+var {{ .Id }}Cmd = &cobra.Command{
+	Use:   "{{ .Id }}",
+	Short: "{{ .Description }}",
+	Long:  `{{ .Long }}`,
+	Run: func(cmd *cobra.Command, args []string) {
+		api := GetApi()
+		resp := new({{ .ResponseType }})
+		_,err := api.Res("{{ .Path }}", resp).Get()
+		HandleError(err)
+		{{- if .ArrayResponse }}
+		table := clitable.New()
+        for k, v := range *resp {
+        	if k == 0 {
+        		table.AddRow(getStructTags(v)...)
+        	}
+        	table.AddRow(getStructVals(v)...)
+        }
+        table.Print()
+		{{- else }}
+		PrintResponse(*resp)
+		{{- end }}
+	},
+}

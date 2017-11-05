@@ -73,7 +73,7 @@ func getStructTags(resp interface{}) []string {
 	return data
 }
 
-func handleError(err error) {
+func HandleError(err error) {
 	if err != nil {
 		log.Fatalln(err)
 	}

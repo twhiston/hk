@@ -14,6 +14,8 @@
 
 package main
 
+//go:generate go run generator/gen.go
+
 import "github.com/twhiston/hk/cmd"
 
 func main() {

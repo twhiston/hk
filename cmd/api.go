@@ -51,3 +51,10 @@ type TimerStartPayload struct {
 type TimerStopPayload struct {
 	End string `json:"end_time,omitempty"`
 }
+
+type ProjectResponse []struct {
+	Id int `json:"id"`
+	Name string `json:"name"`
+	Archived bool `json:"archived'"`
+	Teams []string `json:"teams,omitempty"`
+}
