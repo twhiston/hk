@@ -16,19 +16,20 @@ type GenDataSet struct {
 	Commands struct {
 		Get    []GenGetData  `yaml:"get,omitempty"`
 		Post   []GenPostData `yaml:"post,omitempty"`
-		Put    []GenPostData  `yaml:"put,omitempty"`
+		Put    []GenPostData `yaml:"put,omitempty"`
 		Delete []GenGetData  `yaml:"delete,omitempty"`
 	} `yaml:"commands"`
 }
 
 type GenGetData struct {
-	Id            string `yaml:"id,omitempty"`
-	Parent        string `yaml:"parent,omitempty"`
-	ArrayResponse bool   `yaml:"array,omitempty"`
-	Description   string `yaml:"description,omitempty"`
-	Long          string `yaml:"long,omitempty"`
-	ResponseType  string `yaml:"responseType,omitempty"`
-	Path          string `yaml:"path,omitempty"`
+	Id            string            `yaml:"id,omitempty"`
+	Parent        string            `yaml:"parent,omitempty"`
+	ArrayResponse bool              `yaml:"array,omitempty"`
+	Description   string            `yaml:"description,omitempty"`
+	Long          string            `yaml:"long,omitempty"`
+	ResponseType  string            `yaml:"responseType,omitempty"`
+	Path          string            `yaml:"path,omitempty"`
+	Params        map[string]string `yaml:"params,omitempty"`
 }
 
 type GenPostData struct {
@@ -53,6 +54,7 @@ func main() {
 	//TODO - put template is basically post. could refactor this to use the same one?
 	//TODO - optional dynamic generation of payload renderer stubs
 	//TODO - pass viper options to generator
+	//TODO - make payload rendering optional
 
 	file, err := ioutil.ReadFile("cmdManifest.yml")
 	cmd.HandleError(err)

@@ -27,6 +27,13 @@ commands:
       description: get a list of all projects
       responseType: ProjectResponse
       path: projects
+    - id: time
+      description: get time entries
+      long: get time entries for a specific date
+      responseType: TimeEntryResponse
+      path: time_entries
+      params:
+        date: "{date}xm"
   post:
     - id: start
       parent: timer

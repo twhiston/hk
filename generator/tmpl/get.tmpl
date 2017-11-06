@@ -5,7 +5,14 @@ var {{ .Id }}Cmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		api := GetApi()
 		resp := new({{ .ResponseType }})
-		_,err := api.Res("{{ .Path }}", resp).Get()
+		{{ if .Params }}
+		querystring := map[string]string{
+		{{ range $k, $v := .Params -}}
+            "{{ $k }}": "{{ $v }}",
+        {{ end -}}
+		}
+		{{ end }}
+		_,err := api.Res("{{ .Path }}", resp).Get({{ if .Params }}querystring{{ end }})
 		HandleError(err)
 		{{- if .ArrayResponse }}
 		table := clitable.New()
