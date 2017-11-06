@@ -11,12 +11,14 @@ var {{ .Id }}Cmd = &cobra.Command{
         HandleError(err)
 		r, err :=  api.Res("{{ .Path }}", resp).Post(payload)
 		HandleError(err)
-		if r.Raw.StatusCode != 200 {
+		if r.Raw.StatusCode != {{ .ExpectedStatus }} {
             defer r.Raw.Body.Close()
         	bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
         	HandleError(err)
         	HandleError(errors.New(string(bodyBytes)))
         }
-		PrintResponse(*resp)
+		{{ if .HasResponse -}}
+        PrintResponse(*resp)
+        {{ end }}
 	},
 }

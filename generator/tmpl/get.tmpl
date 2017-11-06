@@ -6,14 +6,21 @@ var {{ .Id }}Cmd = &cobra.Command{
 		api := GetApi()
 		resp := new({{ .ResponseType }})
 		{{ if .Params }}
-		querystring := map[string]string{
+		querystring := make(map[string]string, {{ len .Params }})
+
 		{{ range $k, $v := .Params -}}
-            "{{ $k }}": "{{ $v }}",
+        value, e := cmd.{{ if $v.Persistent }}Persistent{{ end }}Flags().Get{{ $v.Type | ToUpper }}("{{ $v.Name }}")
+        HandleError(e)
+        querystring["{{ $v.Name }}"] = value
         {{ end -}}
-		}
 		{{ end }}
-		_,err := api.Res("{{ .Path }}", resp).Get({{ if .Params }}querystring{{ end }})
+		{{ if .ParameterHandler }}
+		pe := {{ .ParameterHandler }}(&querystring)
+		HandleError(pe)
+		{{ end }}
+		_, err := api.Res("{{ .Path }}", resp).Get({{ if .Params }}querystring{{ end }})
 		HandleError(err)
+		{{ if .HasResponse -}}
 		{{- if .ArrayResponse }}
 		table := clitable.New()
         for k, v := range *resp {
@@ -25,6 +32,7 @@ var {{ .Id }}Cmd = &cobra.Command{
         table.Print()
 		{{- else }}
 		PrintResponse(*resp)
+		{{ end }}
 		{{- end }}
 	},
 }

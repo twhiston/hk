@@ -39,14 +39,16 @@ type TimerResponse struct {
 	Project         Project   `json:"project"`
 }
 
+type TimeEntryResponseArray []TimeEntryResponse
+
 type TimeEntryResponse struct {
-	Id              int    `json:"id"`
-	Starts          string `json:"starts"`
-	Ends            string `json:"ends"`
-	Duration        string `json:"duration"`
-	DurationSeconds int    `json:"duration_in_seconds"`
-	Note            string `json:"note"`
-	User            User   `json:"user"`
+	Id              int       `json:"id"`
+	Starts          string    `json:"starts"`
+	Ends            string    `json:"ends"`
+	Duration        string    `json:"duration"`
+	DurationSeconds int       `json:"duration_in_seconds"`
+	Note            string    `json:"note"`
+	User            User      `json:"user"`
 	Type            TimerType `json:"type"`
 	Project         Project   `json:"project"`
 }
@@ -75,4 +77,12 @@ type ProjectResponse []struct {
 	Name     string   `json:"name"`
 	Archived bool     `json:"archived'"`
 	Teams    []string `json:"teams,omitempty"`
+}
+
+type TimeEntryPayload struct {
+	Starts    string `json:"starts"`
+	Ends      string `json:"ends"`
+	TimeType  int    `json:"time_type_id"`
+	ProjectId int    `json:"project_id,omitempty"`
+	Note      string `json:"note"`
 }

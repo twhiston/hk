@@ -42,9 +42,15 @@ func init() {
 }
 
 {{ define "initcode" }}
-{{- range $index, $element := . }}{{ if not $element.Parent }}
+{{- range $index, $element := . -}}
+{{ if not $element.Parent }}
     RootCmd.AddCommand({{ $element.Id }}Cmd)
 {{- else }}
     {{ $element.Parent }}Cmd.AddCommand({{ $element.Id }}Cmd)
-{{ end }}{{ end -}}
+{{ end }}
+{{- range $i, $param := $element.Params }}
+    {{ $element.Id }}Cmd.{{ if $param.Persistent }}Persistent{{ end }}Flags().{{ $param.Type | ToUpper }}{{ if $param.Short }}P{{ end }}("{{ $param.Name }}",{{ if $param.Short }} "{{ $param.Short }}",{{ end }} {{ $param.Value }}, "{{ $param.Usage }}")
+{{ end -}}
+{{ end }}
+
 {{ end }}

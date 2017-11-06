@@ -29,22 +29,6 @@ func PrintResponse(resp interface{}) {
 	table.Print()
 }
 
-func PrintResponseArray(resp interface{}) {
-
-	tbl, _ := resp.([]interface{})
-	//if !err {
-	//	log.Fatalln("Response must be array for printing")
-	//}
-	table := clitable.New()
-	for k, v := range tbl {
-		if k == 0 {
-			table.AddRow(getStructTags(v)...)
-		}
-		table.AddRow(getStructVals(v)...)
-	}
-	table.Print()
-}
-
 func getStructVals(resp interface{}) []string {
 	data := make([]string, 0)
 	val := reflect.ValueOf(resp)

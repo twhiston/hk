@@ -8,6 +8,7 @@ import (
 	"github.com/twhiston/hk/cmd"
 	"io/ioutil"
 	"gopkg.in/yaml.v2"
+	"strings"
 )
 
 type GenDataSet struct {
@@ -22,21 +23,35 @@ type GenDataSet struct {
 }
 
 type GenGetData struct {
-	Id            string            `yaml:"id,omitempty"`
-	Parent        string            `yaml:"parent,omitempty"`
-	ArrayResponse bool              `yaml:"array,omitempty"`
-	Description   string            `yaml:"description,omitempty"`
-	Long          string            `yaml:"long,omitempty"`
-	ResponseType  string            `yaml:"responseType,omitempty"`
-	Path          string            `yaml:"path,omitempty"`
-	Params        map[string]string `yaml:"params,omitempty"`
+	Id               string                `yaml:"id,omitempty"`
+	Parent           string                `yaml:"parent,omitempty"`
+	ArrayResponse    bool                  `yaml:"array,omitempty"`
+	Description      string                `yaml:"description,omitempty"`
+	Long             string                `yaml:"long,omitempty"`
+	ResponseType     string                `yaml:"responseType,omitempty"`
+	Path             string                `yaml:"path,omitempty"`
+	ParameterHandler string                `yaml:"parameterHandler,omitempty"`
+	Params           []GenCommandParameter `yaml:"params,omitempty"`
+	HasResponse      bool                  `yaml:"hasResponse,omitempty"`
 }
 
 type GenPostData struct {
 	GenGetData             `yaml:",inline"`
 	PayloadType     string `yaml:"payloadType,omitempty"`
 	PostDataHandler string `yaml:"postDataHandler,omitempty"`
+	ExpectedStatus  int    `yaml:"expectedStatus"`
 }
+
+type GenCommandOption struct {
+	Name       string `yaml:"name"`
+	Type       string `yaml:"type"`
+	Usage      string `yaml:"usage"`
+	Value      string `yaml:"value"`
+	Persistent bool   `yaml:"persistent"`
+	Short      string `yaml:"short,omitempty"`
+}
+
+type GenCommandParameter GenCommandOption
 
 func newGenDataSet() *GenDataSet {
 	gds := new(GenDataSet)
@@ -53,10 +68,8 @@ func main() {
 
 	//TODO - put template is basically post. could refactor this to use the same one?
 	//TODO - optional dynamic generation of payload renderer stubs
-	//TODO - pass viper options to generator
-	//TODO - make payload rendering optional
 
-	file, err := ioutil.ReadFile("cmdManifest.yml")
+	file, err := ioutil.ReadFile("manifest.yml")
 	cmd.HandleError(err)
 
 	dataset := newGenDataSet()
@@ -64,6 +77,12 @@ func main() {
 	cmd.HandleError(err)
 
 	t := template.New("hk")
+
+	funcMap := template.FuncMap{
+		"ToUpper": strings.Title,
+	}
+	t.Funcs(funcMap)
+
 	t, err = t.ParseGlob("generator/tmpl/*.tmpl")
 	cmd.HandleError(err)
 

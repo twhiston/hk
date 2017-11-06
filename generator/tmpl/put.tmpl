@@ -17,6 +17,8 @@ var {{ .Id }}Cmd = &cobra.Command{
         	HandleError(err)
         	HandleError(errors.New(string(bodyBytes)))
         }
-		PrintResponse(*resp)
+		{{ if .HasResponse -}}
+        PrintResponse(*resp)
+        {{ end }}
 	},
 }
