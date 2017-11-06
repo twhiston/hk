@@ -93,7 +93,7 @@ commands:
       parent: timer
       description: stop a timer
       long: stops a timer and optionally sets a stop time
-      responseType: TimerResponse
+      responseType: TimeEntryResponse
       path: timer
       payloadType: TimerStopPayload
       hasResponse: true
