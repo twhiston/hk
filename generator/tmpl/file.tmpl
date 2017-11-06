@@ -35,7 +35,7 @@ import (
 
 //Initialize commands and options
 func init() {
-    {{ template "initcode" .Commands.Get -}}
+    {{  template "initcode" .Commands.Get -}}
     {{- template "initcode" .Commands.Post -}}
     {{- template "initcode" .Commands.Put -}}
     {{- template "initcode" .Commands.Delete -}}
@@ -47,10 +47,8 @@ func init() {
     RootCmd.AddCommand({{ $element.Id }}Cmd)
 {{- else }}
     {{ $element.Parent }}Cmd.AddCommand({{ $element.Id }}Cmd)
-{{ end }}
-{{- range $i, $param := $element.Params }}
-    {{ $element.Id }}Cmd.{{ if $param.Persistent }}Persistent{{ end }}Flags().{{ $param.Type | ToUpper }}{{ if $param.Short }}P{{ end }}("{{ $param.Name }}",{{ if $param.Short }} "{{ $param.Short }}",{{ end }} {{ $param.Value }}, "{{ $param.Usage }}")
+{{- end }}
+{{ range $i, $param := $element.Params }}    {{ $element.Id }}Cmd.{{ if $param.Persistent }}Persistent{{ end }}Flags().{{ $param.Type | ToUpper }}{{ if $param.Short }}P{{ end }}("{{ $param.Name }}",{{ if $param.Short }} "{{ $param.Short }}",{{ end }} {{ $param.Value }}, "{{ $param.Usage }}")
 {{ end -}}
-{{ end }}
-
+{{- end -}}
 {{ end }}

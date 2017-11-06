@@ -33,13 +33,19 @@ type GenGetData struct {
 	ParameterHandler string                `yaml:"parameterHandler,omitempty"`
 	Params           []GenCommandParameter `yaml:"params,omitempty"`
 	HasResponse      bool                  `yaml:"hasResponse,omitempty"`
+	Index            GenIndexData          `yaml:"index,omitempty"`
+	ExpectedStatus   int                   `yaml:"expectedStatus"`
+}
+
+type GenIndexData struct {
+	Arg      int  `yaml:"index,omitempty"`
+	Required bool `yaml:"required,omitempty"`
 }
 
 type GenPostData struct {
 	GenGetData             `yaml:",inline"`
 	PayloadType     string `yaml:"payloadType,omitempty"`
 	PostDataHandler string `yaml:"postDataHandler,omitempty"`
-	ExpectedStatus  int    `yaml:"expectedStatus"`
 }
 
 type GenCommandOption struct {

@@ -13,12 +13,14 @@ var {{ .Id }}Cmd = &cobra.Command{
         {{ end -}}
 		r, err :=  api.Res("{{ .Path }}", resp).Post(payload)
 		HandleError(err)
+		{{ if gt .ExpectedStatus 0 }}
 		if r.Raw.StatusCode != {{ .ExpectedStatus }} {
             defer r.Raw.Body.Close()
         	bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
         	HandleError(err)
         	HandleError(errors.New(string(bodyBytes)))
         }
+        {{ end }}
 		{{ if .HasResponse -}}
         PrintResponse(*resp)
         {{ end }}

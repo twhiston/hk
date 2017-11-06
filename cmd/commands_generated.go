@@ -4,11 +4,10 @@ package cmd
 // DO NOT ALTER THIS FILE MANUALLY
 
 import (
- "github.com/spf13/cobra"
- "errors"
- "io/ioutil"
- "github.com/twhiston/clitable"
- 
+	"github.com/spf13/cobra"
+	"errors"
+	"io/ioutil"
+	"github.com/twhiston/clitable"
 )
 
 // GET COMMANDS
@@ -18,15 +17,15 @@ var statsCmd = &cobra.Command{
 	Short: "get your current stats",
 	Long:  `returns the /overview endpoint`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		api := GetApi()
 		resp := new(StatsResponse)
-		
-		
+
 		_, err := api.Res("overview", resp).Get()
 		HandleError(err)
-		
+
 		PrintResponse(*resp)
-		
+
 	},
 }
 
@@ -35,15 +34,15 @@ var timerCmd = &cobra.Command{
 	Short: "Do things with timers",
 	Long:  `Get the current timer, or use subcommands to control timers`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		api := GetApi()
 		resp := new(TimerResponse)
-		
-		
+
 		_, err := api.Res("timer", resp).Get()
 		HandleError(err)
-		
+
 		PrintResponse(*resp)
-		
+
 	},
 }
 
@@ -52,21 +51,21 @@ var typesCmd = &cobra.Command{
 	Short: "get the types of timer available",
 	Long:  `returns the possible timer options for your hakuna instance, use these id's with timer commands`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		api := GetApi()
 		resp := new(TimerTypesResponse)
-		
-		
+
 		_, err := api.Res("time_types", resp).Get()
 		HandleError(err)
-		
+
 		table := clitable.New()
-        for k, v := range *resp {
-        	if k == 0 {
-        		table.AddRow(getStructTags(v)...)
-        	}
-        	table.AddRow(getStructVals(v)...)
-        }
-        table.Print()
+		for k, v := range *resp {
+			if k == 0 {
+				table.AddRow(getStructTags(v)...)
+			}
+			table.AddRow(getStructVals(v)...)
+		}
+		table.Print()
 	},
 }
 
@@ -75,13 +74,13 @@ var projectsCmd = &cobra.Command{
 	Short: "get a list of all projects",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		api := GetApi()
 		resp := new(ProjectResponse)
-		
-		
+
 		_, err := api.Res("projects", resp).Get()
 		HandleError(err)
-		
+
 	},
 }
 
@@ -90,34 +89,53 @@ var timeCmd = &cobra.Command{
 	Short: "get time entries",
 	Long:  `get time entries for a specific date`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		api := GetApi()
 		resp := new(TimeEntryResponseArray)
-		
+
 		querystring := make(map[string]string, 1)
 
-		value, e := cmd.PersistentFlags().GetString("date")
-        HandleError(e)
-        querystring["date"] = value
-        
-		
+		value, e := cmd.Flags().GetString("date")
+		HandleError(e)
+		querystring["date"] = value
+
 		pe := TimeParamHandler(&querystring)
 		HandleError(pe)
-		
+
 		_, err := api.Res("time_entries", resp).Get(querystring)
 		HandleError(err)
-		
+
 		table := clitable.New()
-        for k, v := range *resp {
-        	if k == 0 {
-        		table.AddRow(getStructTags(v)...)
-        	}
-        	table.AddRow(getStructVals(v)...)
-        }
-        table.Print()
+		for k, v := range *resp {
+			if k == 0 {
+				table.AddRow(getStructTags(v)...)
+			}
+			table.AddRow(getStructVals(v)...)
+		}
+		table.Print()
 	},
 }
 
+var entryCmd = &cobra.Command{
+	Use:   "entry",
+	Short: "get a time entry specified by an id",
+	Long:  `returns a specific time entry, which is given as an argument to the command`,
+	Run: func(cmd *cobra.Command, args []string) {
 
+		if len(args) < (0 + 1) {
+			HandleError(errors.New("argument 0 is required for this command"))
+		}
+
+		api := GetApi()
+		resp := new(TimeEntryResponse)
+
+		_, err := api.Res("time_entries", resp).Id(args[0]).Get()
+		HandleError(err)
+
+		PrintResponse(*resp)
+
+	},
+}
 
 // POST COMMANDS
 
@@ -130,17 +148,18 @@ var startCmd = &cobra.Command{
 		resp := new(TimerResponse)
 		payload := new(TimerStartPayload)
 		// Payload renderer must have signature (cmd *cobra.Command, args []string, payload *TimerStartPayload) (*TimerStartPayload, error)
-        err := FillStartTimerData(cmd, args, payload)
-        HandleError(err)
-        r, err :=  api.Res("timer", resp).Post(payload)
+		err := FillStartTimerData(cmd, args, payload)
 		HandleError(err)
+		r, err := api.Res("timer", resp).Post(payload)
+		HandleError(err)
+
 		if r.Raw.StatusCode != 201 {
-            defer r.Raw.Body.Close()
-        	bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
-        	HandleError(err)
-        	HandleError(errors.New(string(bodyBytes)))
-        }
-		
+			defer r.Raw.Body.Close()
+			bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
+			HandleError(err)
+			HandleError(errors.New(string(bodyBytes)))
+		}
+
 	},
 }
 var createCmd = &cobra.Command{
@@ -152,21 +171,22 @@ var createCmd = &cobra.Command{
 		resp := new(TimeEntryResponse)
 		payload := new(TimeEntryPayload)
 		// Payload renderer must have signature (cmd *cobra.Command, args []string, payload *TimeEntryPayload) (*TimeEntryPayload, error)
-        err := FillTimeEntryData(cmd, args, payload)
-        HandleError(err)
-        r, err :=  api.Res("time_entries", resp).Post(payload)
+		err := FillTimeEntryData(cmd, args, payload)
 		HandleError(err)
+		r, err := api.Res("time_entries", resp).Post(payload)
+		HandleError(err)
+
 		if r.Raw.StatusCode != 201 {
-            defer r.Raw.Body.Close()
-        	bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
-        	HandleError(err)
-        	HandleError(errors.New(string(bodyBytes)))
-        }
+			defer r.Raw.Body.Close()
+			bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
+			HandleError(err)
+			HandleError(errors.New(string(bodyBytes)))
+		}
+
 		PrintResponse(*resp)
-        
+
 	},
 }
-
 
 // PUT COMMANDS
 
@@ -178,20 +198,19 @@ var stopCmd = &cobra.Command{
 		api := GetApi()
 		resp := new(TimeEntryResponse)
 		payload := new(TimerStopPayload)
-		
-		r, err :=  api.Res("timer", resp).Put(payload)
+
+		r, err := api.Res("timer", resp).Put(payload)
 		HandleError(err)
 		if r.Raw.StatusCode != 200 {
-            defer r.Raw.Body.Close()
-        	bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
-        	HandleError(err)
-        	HandleError(errors.New(string(bodyBytes)))
-        }
+			defer r.Raw.Body.Close()
+			bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
+			HandleError(err)
+			HandleError(errors.New(string(bodyBytes)))
+		}
 		PrintResponse(*resp)
-        
+
 	},
 }
-
 
 // DELETE COMMANDS
 
@@ -200,56 +219,71 @@ var cancelCmd = &cobra.Command{
 	Short: "cancel a timer",
 	Long:  `deletes the currently running timer`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		api := GetApi()
-		r, _ :=  api.Res("timer").Delete()
+		r, _ := api.Res("timer").Delete()
+
 		if r.Raw.StatusCode != 205 {
-            defer r.Raw.Body.Close()
-        	bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
-        	HandleError(err)
-        	HandleError(errors.New(string(bodyBytes)))
-        }
-        
+			defer r.Raw.Body.Close()
+			bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
+			HandleError(err)
+			HandleError(errors.New(string(bodyBytes)))
+		}
+
 	},
 }
 
+var deleteCmd = &cobra.Command{
+	Use:   "delete",
+	Short: "delete a time",
+	Long:  `deletes a time via it's id.`,
+	Run: func(cmd *cobra.Command, args []string) {
 
+		if len(args) < (0 + 1) {
+			HandleError(errors.New("argument 0 is required for this command"))
+		}
 
+		api := GetApi()
+		r, _ := api.Res("time_entries").Id(args[0]).Delete()
+
+		if r.Raw.StatusCode != 204 {
+			defer r.Raw.Body.Close()
+			bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
+			HandleError(err)
+			HandleError(errors.New(string(bodyBytes)))
+		}
+
+	},
+}
 
 //Initialize commands and options
 func init() {
-    
-    RootCmd.AddCommand(statsCmd)
-    RootCmd.AddCommand(timerCmd)
-    timerCmd.AddCommand(typesCmd)
 
-    RootCmd.AddCommand(projectsCmd)
-    RootCmd.AddCommand(timeCmd)
-    timeCmd.PersistentFlags().StringP("date", "d", "", "enter the date that you want to look for details of. If left blank will use todays date")
+	RootCmd.AddCommand(statsCmd)
 
+	RootCmd.AddCommand(timerCmd)
 
+	timerCmd.AddCommand(typesCmd)
 
-    timerCmd.AddCommand(startCmd)
+	RootCmd.AddCommand(projectsCmd)
 
-    timeCmd.AddCommand(createCmd)
+	RootCmd.AddCommand(timeCmd)
+	timeCmd.Flags().StringP("date", "d", "", "enter the date that you want to look for details of. If left blank will use todays date")
 
-    createCmd.Flags().String("start", "", "enter the start date in the format yyyy-dd-mmThh:mm")
+	timeCmd.AddCommand(entryCmd)
 
-    createCmd.Flags().String("end", "", "enter the start date in the format yyyy-dd-mmThh:mm")
+	timerCmd.AddCommand(startCmd)
 
-    createCmd.Flags().Int("time-id", 1, "enter the time type id. You can get these with the types command, defaults to 1 which is usually Arbeit")
+	timeCmd.AddCommand(createCmd)
+	createCmd.Flags().String("start", "", "enter the start date in the format yyyy-dd-mmThh:mm")
+	createCmd.Flags().String("end", "", "enter the start date in the format yyyy-dd-mmThh:mm")
+	createCmd.Flags().Int("time-id", 1, "enter the time type id. You can get these with the types command, defaults to 1 which is usually Arbeit")
+	createCmd.Flags().Int("project-id", 0, "optional project id")
+	createCmd.Flags().String("note", "", "optional note to add to the entry")
 
-    createCmd.Flags().Int("project-id", 0, "optional project id")
+	timerCmd.AddCommand(stopCmd)
 
-    createCmd.Flags().String("note", "", "optional note to add to the entry")
+	timerCmd.AddCommand(cancelCmd)
 
-
-
-    timerCmd.AddCommand(stopCmd)
-
-
-
-    timerCmd.AddCommand(cancelCmd)
-
-
+	timeCmd.AddCommand(deleteCmd)
 }
-

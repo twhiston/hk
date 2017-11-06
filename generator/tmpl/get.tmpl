@@ -3,6 +3,12 @@ var {{ .Id }}Cmd = &cobra.Command{
 	Short: "{{ .Description }}",
 	Long:  `{{ .Long }}`,
 	Run: func(cmd *cobra.Command, args []string) {
+
+	    {{ if .Index.Required }}
+	    if len(args) < ({{ .Index.Arg }}+1) {
+	        HandleError(errors.New("argument {{ .Index.Arg }} is required for this command"))
+	    }
+	    {{ end }}
 		api := GetApi()
 		resp := new({{ .ResponseType }})
 		{{ if .Params }}
@@ -18,7 +24,7 @@ var {{ .Id }}Cmd = &cobra.Command{
 		pe := {{ .ParameterHandler }}(&querystring)
 		HandleError(pe)
 		{{ end }}
-		_, err := api.Res("{{ .Path }}", resp).Get({{ if .Params }}querystring{{ end }})
+		_, err := api.Res("{{ .Path }}", resp).{{ if .Index.Required }}Id(args[{{ .Index.Arg }}]).{{ end }}Get({{ if .Params }}querystring{{ end }})
 		HandleError(err)
 		{{ if .HasResponse -}}
 		{{- if .ArrayResponse }}

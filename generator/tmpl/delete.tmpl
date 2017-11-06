@@ -3,14 +3,22 @@ var {{ .Id }}Cmd = &cobra.Command{
 	Short: "{{ .Description }}",
 	Long:  `{{ .Long }}`,
 	Run: func(cmd *cobra.Command, args []string) {
+
+	    {{ if .Index.Required }}
+	    if len(args) < ({{ .Index.Arg }}+1) {
+	        HandleError(errors.New("argument {{ .Index.Arg }} is required for this command"))
+	    }
+	    {{ end }}
 		api := GetApi()
-		r, _ :=  api.Res("{{ .Path }}").Delete()
-		if r.Raw.StatusCode != 205 {
+		r, _ :=  api.Res("{{ .Path }}").{{ if .Index.Required }}Id(args[{{ .Index.Arg }}]).{{ end }}Delete()
+		{{ if gt .ExpectedStatus 0 }}
+        if r.Raw.StatusCode != {{ .ExpectedStatus }} {
             defer r.Raw.Body.Close()
         	bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
         	HandleError(err)
         	HandleError(errors.New(string(bodyBytes)))
         }
+        {{ end }}
         {{ if .HasResponse -}}
         PrintResponse(*resp)
         {{ end }}

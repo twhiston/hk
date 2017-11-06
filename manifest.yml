@@ -43,8 +43,17 @@ commands:
           type: string
           usage: enter the date that you want to look for details of. If left blank will use todays date
           value: "\"\""
-          persistent: true
           short: d
+    - id: entry
+      parent: time
+      description: get a time entry specified by an id
+      long: returns a specific time entry, which is given as an argument to the command
+      responseType: TimeEntryResponse
+      path: time_entries
+      hasResponse: true
+      index:
+        arg: 0
+        required: true
   post:
     - id: start
       parent: timer
@@ -87,7 +96,6 @@ commands:
           type: string
           usage: optional note to add to the entry
           value: "\"\""
-
   put:
     - id: stop
       parent: timer
@@ -104,3 +112,13 @@ commands:
       long: deletes the currently running timer
       responseType: TimerResponse
       path: timer
+      expectedStatus: 205
+    - id: delete
+      parent: time
+      description: delete a time
+      long: deletes a time via it's id.
+      path: time_entries
+      expectedStatus: 204
+      index:
+        arg: 0
+        required: true
