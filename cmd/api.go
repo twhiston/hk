@@ -1,11 +1,13 @@
 package cmd
 
+//User represents a user type in Hakuna
 type User struct {
 	Id    int      `json:"id"`
 	Name  string   `json:"name"`
 	Teams []string `json:"teams"`
 }
 
+//TimerType represents a timer type, these are
 type TimerType struct {
 	Id       int    `json:"id"`
 	Name     string `json:"name"`

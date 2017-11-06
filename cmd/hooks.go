@@ -11,10 +11,6 @@ func FillStartTimerData(cmd *cobra.Command, args []string, payload *TimerStartPa
 	return nil
 }
 
-func FillStopTimerData(cmd *cobra.Command, args []string, payload *TimerStopPayload) error {
-	return nil
-}
-
 func FillTimeEntryData(cmd *cobra.Command, args []string, payload *TimeEntryPayload) error {
 	starts, err := cmd.Flags().GetString("start")
 	HandleError(err)

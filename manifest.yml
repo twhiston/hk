@@ -48,13 +48,13 @@ commands:
   post:
     - id: start
       parent: timer
-      description: Get your current running timer details
-      long: returns the currently running timer, or an error if no timer is running
+      description: Starts a new timer
+      long: Creates a new running timer starting from now
       responseType: TimerResponse
       path: timer
       payloadType: TimerStartPayload
       postDataHandler: FillStartTimerData
-      expectedStatus: 200
+      expectedStatus: 201
     - id: create
       parent: time
       description: Create a time entry in the calendar
@@ -96,7 +96,6 @@ commands:
       responseType: TimerResponse
       path: timer
       payloadType: TimerStopPayload
-      postDataHandler: FillStopTimerData
       hasResponse: true
   delete:
     - id: cancel
