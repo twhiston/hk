@@ -3,17 +3,17 @@ package main
 // +build ignore
 
 import (
-	"text/template"
-	"os"
 	"github.com/twhiston/hk/cmd"
-	"io/ioutil"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"os"
 	"strings"
+	"text/template"
 )
 
 type GenDataSet struct {
-	Pkg     string   `yaml:"pkg,omitempty"`
-	Imports []string `yaml:"import,omitempty"`
+	Pkg      string   `yaml:"pkg,omitempty"`
+	Imports  []string `yaml:"import,omitempty"`
 	Commands struct {
 		Get    []GenGetData  `yaml:"get,omitempty"`
 		Post   []GenPostData `yaml:"post,omitempty"`
@@ -43,7 +43,7 @@ type GenIndexData struct {
 }
 
 type GenPostData struct {
-	GenGetData             `yaml:",inline"`
+	GenGetData      `yaml:",inline"`
 	PayloadType     string `yaml:"payloadType,omitempty"`
 	PostDataHandler string `yaml:"postDataHandler,omitempty"`
 }

@@ -29,6 +29,17 @@ Note that some commands will not be available unless you have an organization ap
 Commands currently cover a large chunk of the api and are described in the manifest.yml file.
 Currently you cannot update an entry or perform any absence functions. Coming soon!
 
+use `hk --help` or `hk {command} --help` to find out options and further sub-commands
+
+## Additional Commands
+
+In addition to the generated commands there are custom commands that dont only return the API functionality
+
+### today
+
+using the `hk today` command you can see your total for today including any active timers, and it displays a
+sum of all times, this means that you can quickly use this command to get an overview of your day
+
 ### time
 
 The time command with no option will take todays date, the option --date allows you to specify a date to query
@@ -45,3 +56,4 @@ To generate the output simple run `go generate` in the root folder
 - Generate code for command tests
 - Cover everything else with tests
 - consolidate templates for verbs in to a single one
+- today command that can give you the total of your day plus any running timers

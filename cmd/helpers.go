@@ -1,14 +1,14 @@
 package cmd
 
 import (
-	"reflect"
 	"fmt"
+	"reflect"
 
-	"github.com/twhiston/clitable"
-	"github.com/spf13/viper"
 	"github.com/bndr/gopencils"
-	"net/http"
+	"github.com/spf13/viper"
+	"github.com/twhiston/clitable"
 	"log"
+	"net/http"
 )
 
 func GetApi() *gopencils.Resource {

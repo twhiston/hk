@@ -1,9 +1,9 @@
 package cmd
 
 import (
+	"errors"
 	"github.com/spf13/cobra"
 	"time"
-	"errors"
 )
 
 func FillStartTimerData(cmd *cobra.Command, args []string, payload *TimerStartPayload) error {

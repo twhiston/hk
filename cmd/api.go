@@ -24,7 +24,7 @@ type Project struct {
 type StatsResponse struct {
 	Overtime        string `json:"overtime"`
 	OvertimeSeconds int    `json:"overtime_in_seconds"`
-	Vacation struct {
+	Vacation        struct {
 		Redeemed  float32 `json:"redeemed_days"`
 		Remaining float32 `json:"remaining_days"`
 	} `json:"vacation"`

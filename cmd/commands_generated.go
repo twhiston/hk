@@ -4,10 +4,10 @@ package cmd
 // DO NOT ALTER THIS FILE MANUALLY
 
 import (
-	"github.com/spf13/cobra"
 	"errors"
-	"io/ioutil"
+	"github.com/spf13/cobra"
 	"github.com/twhiston/clitable"
+	"io/ioutil"
 )
 
 // GET COMMANDS
