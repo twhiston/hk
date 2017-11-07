@@ -30,6 +30,10 @@ type StatsResponse struct {
 	} `json:"vacation"`
 }
 
+type PingResponse struct {
+	Pong string `json:"pong"`
+}
+
 type TimerResponse struct {
 	Date            string    `json:"date"`
 	Start           string    `json:"start_time"`

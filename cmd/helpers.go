@@ -51,7 +51,11 @@ func getStructTags(resp interface{}) []string {
 			a := getStructTags(val.Field(i).Interface())
 			data = append(data, a...)
 		} else {
-			data = append(data, val.Type().Field(i).Tag.Get("json"))
+			tag := val.Type().Field(i).Tag.Get("json")
+			if tag != "" {
+				data = append(data, tag)
+			}
+
 		}
 	}
 	return data
