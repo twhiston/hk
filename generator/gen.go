@@ -9,21 +9,22 @@ import (
 	"os"
 	"strings"
 	"text/template"
+	"log"
 )
 
-type GenDataSet struct {
-	Pkg      string   `yaml:"pkg,omitempty"`
-	Imports  []string `yaml:"import,omitempty"`
+type genDataSet struct {
+	Pkg     string   `yaml:"pkg,omitempty"`
+	Imports []string `yaml:"import,omitempty"`
 	Commands struct {
-		Get    []GenGetData  `yaml:"get,omitempty"`
-		Post   []GenPostData `yaml:"post,omitempty"`
-		Put    []GenPostData `yaml:"put,omitempty"`
-		Delete []GenGetData  `yaml:"delete,omitempty"`
+		Get    []genGetData  `yaml:"get,omitempty"`
+		Post   []genPostData `yaml:"post,omitempty"`
+		Put    []genPostData `yaml:"put,omitempty"`
+		Delete []genGetData  `yaml:"delete,omitempty"`
 	} `yaml:"commands"`
 }
 
-type GenGetData struct {
-	Id               string                `yaml:"id,omitempty"`
+type genGetData struct {
+	ID               string                `yaml:"id,omitempty"`
 	Parent           string                `yaml:"parent,omitempty"`
 	ArrayResponse    bool                  `yaml:"array,omitempty"`
 	Description      string                `yaml:"description,omitempty"`
@@ -31,24 +32,24 @@ type GenGetData struct {
 	ResponseType     string                `yaml:"responseType,omitempty"`
 	Path             string                `yaml:"path,omitempty"`
 	ParameterHandler string                `yaml:"parameterHandler,omitempty"`
-	Params           []GenCommandParameter `yaml:"params,omitempty"`
+	Params           []genCommandParameter `yaml:"params,omitempty"`
 	HasResponse      bool                  `yaml:"hasResponse,omitempty"`
-	Index            GenIndexData          `yaml:"index,omitempty"`
+	Index            genIndexData          `yaml:"index,omitempty"`
 	ExpectedStatus   int                   `yaml:"expectedStatus"`
 }
 
-type GenIndexData struct {
+type genIndexData struct {
 	Arg      int  `yaml:"index,omitempty"`
 	Required bool `yaml:"required,omitempty"`
 }
 
-type GenPostData struct {
-	GenGetData      `yaml:",inline"`
+type genPostData struct {
+	genGetData             `yaml:",inline"`
 	PayloadType     string `yaml:"payloadType,omitempty"`
 	PostDataHandler string `yaml:"postDataHandler,omitempty"`
 }
 
-type GenCommandOption struct {
+type genCommandOption struct {
 	Name       string `yaml:"name"`
 	Type       string `yaml:"type"`
 	Usage      string `yaml:"usage"`
@@ -57,16 +58,16 @@ type GenCommandOption struct {
 	Short      string `yaml:"short,omitempty"`
 }
 
-type GenCommandParameter GenCommandOption
+type genCommandParameter genCommandOption
 
-func newGenDataSet() *GenDataSet {
-	gds := new(GenDataSet)
+func newGenDataSet() *genDataSet {
+	gds := new(genDataSet)
 	gds.Pkg = "cmd" //TODO - make dynamic
 	gds.Imports = make([]string, 0)
-	gds.Commands.Delete = make([]GenGetData, 0)
-	gds.Commands.Put = make([]GenPostData, 0)
-	gds.Commands.Post = make([]GenPostData, 0)
-	gds.Commands.Get = make([]GenGetData, 0)
+	gds.Commands.Delete = make([]genGetData, 0)
+	gds.Commands.Put = make([]genPostData, 0)
+	gds.Commands.Post = make([]genPostData, 0)
+	gds.Commands.Get = make([]genGetData, 0)
 	return gds
 }
 
@@ -94,7 +95,12 @@ func main() {
 
 	f, err := os.Create("cmd/commands_generated.go")
 	cmd.HandleError(err)
-	defer f.Close()
+	defer func(r *os.File){
+		err = r.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(f)
 
 	err = t.ExecuteTemplate(f, "file.tmpl", &dataset)
 	cmd.HandleError(err)

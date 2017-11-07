@@ -44,11 +44,11 @@ func init() {
 {{ define "initcode" }}
 {{- range $index, $element := . -}}
 {{ if not $element.Parent }}
-    RootCmd.AddCommand({{ $element.Id }}Cmd)
+    RootCmd.AddCommand({{ $element.ID }}Cmd)
 {{- else }}
-    {{ $element.Parent }}Cmd.AddCommand({{ $element.Id }}Cmd)
+    {{ $element.Parent }}Cmd.AddCommand({{ $element.ID }}Cmd)
 {{- end }}
-{{ range $i, $param := $element.Params }}    {{ $element.Id }}Cmd.{{ if $param.Persistent }}Persistent{{ end }}Flags().{{ $param.Type | ToUpper }}{{ if $param.Short }}P{{ end }}("{{ $param.Name }}",{{ if $param.Short }} "{{ $param.Short }}",{{ end }} {{ $param.Value }}, "{{ $param.Usage }}")
+{{ range $i, $param := $element.Params }}    {{ $element.ID }}Cmd.{{ if $param.Persistent }}Persistent{{ end }}Flags().{{ $param.Type | ToUpper }}{{ if $param.Short }}P{{ end }}("{{ $param.Name }}",{{ if $param.Short }} "{{ $param.Short }}",{{ end }} {{ $param.Value }}, "{{ $param.Usage }}")
 {{ end -}}
 {{- end -}}
 {{ end }}
