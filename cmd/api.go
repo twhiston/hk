@@ -7,7 +7,7 @@ type User struct {
 	Teams []string `json:"teams"`
 }
 
-//TimerType represents a timer type, these are
+//TimerType represents a timer type in Hakuna
 type TimerType struct {
 	Id       int    `json:"id"`
 	Name     string `json:"name"`
@@ -15,12 +15,14 @@ type TimerType struct {
 	Excluded bool   `json:"excluded_from_calculations"`
 }
 
+//Project represents a project item embedded in another type
 type Project struct {
 	Id       int    `json:"id"`
 	Name     string `json:"name"`
 	Archived bool   `json:"archived"`
 }
 
+//StatsResponse represents your current stats
 type StatsResponse struct {
 	Overtime        string `json:"overtime"`
 	OvertimeSeconds int    `json:"overtime_in_seconds"`
@@ -30,10 +32,12 @@ type StatsResponse struct {
 	} `json:"vacation"`
 }
 
+//PingResponse contains a pong, not actually used in the cli. Included for completeness
 type PingResponse struct {
 	Pong string `json:"pong"`
 }
 
+//TimerType represents a timer type in Hakuna
 type TimerResponse struct {
 	Date            string    `json:"date"`
 	Start           string    `json:"start_time"`
@@ -45,8 +49,10 @@ type TimerResponse struct {
 	Project         Project   `json:"project"`
 }
 
+//TimeEntryResponseArray represents a slice of time entries
 type TimeEntryResponseArray []TimeEntryResponse
 
+//TimeEntryResponse represents a time entry retrieved from hakuna
 type TimeEntryResponse struct {
 	Id              int       `json:"id"`
 	Starts          string    `json:"starts"`
@@ -59,6 +65,7 @@ type TimeEntryResponse struct {
 	Project         Project   `json:"project"`
 }
 
+//TimerTypesResponse represents an slice of possible timer types from the Hakuna API
 type TimerTypesResponse []struct {
 	Id       int    `json:"id"`
 	Name     string `json:"name"`
@@ -67,17 +74,7 @@ type TimerTypesResponse []struct {
 	Exclude  bool   `json:"exclude_from calculations"`
 }
 
-type TimerStartPayload struct {
-	Id        int    `json:"time_type_id"`
-	Start     string `json:"start_time,omitempty"`
-	ProjectId string `json:"project_id,omitempty"`
-	Note      string `json:"note,omitempty"`
-}
-
-type TimerStopPayload struct {
-	End string `json:"end_time,omitempty"`
-}
-
+//ProjectResponse represents an slice of  project responses in Hakuna
 type ProjectResponse []struct {
 	Id       int      `json:"id"`
 	Name     string   `json:"name"`
@@ -85,6 +82,20 @@ type ProjectResponse []struct {
 	Teams    []string `json:"teams,omitempty"`
 }
 
+//TimerStartPayload is passed when starting a new timer
+type TimerStartPayload struct {
+	Id        int    `json:"time_type_id"`
+	Start     string `json:"start_time,omitempty"`
+	ProjectId string `json:"project_id,omitempty"`
+	Note      string `json:"note,omitempty"`
+}
+
+//TimerStopPayload sends an optional end time to the api
+type TimerStopPayload struct {
+	End string `json:"end_time,omitempty"`
+}
+
+//TimeEntryPayload represents the data to send when adding a new time entry
 type TimeEntryPayload struct {
 	Starts    string `json:"starts"`
 	Ends      string `json:"ends"`

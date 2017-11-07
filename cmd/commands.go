@@ -7,7 +7,6 @@ import (
 	"github.com/twhiston/clitable"
 	"strconv"
 	"time"
-	"fmt"
 )
 
 // GET COMMANDS
@@ -48,20 +47,11 @@ This returns all times for the current day, including the running timer and a su
 			table.AddRow(time.Now().Local().Format("2006-01-02")+"T"+tr.Start, tr.Duration, strconv.Itoa(tr.DurationSeconds))
 			durationTotal += tr.DurationSeconds
 		}
-		table.AddRow("Today", secondsToHoursAndMinutes(durationTotal), strconv.Itoa(durationTotal) )
+		table.AddRow("Today", secondsToHoursAndMinutes(durationTotal), strconv.Itoa(durationTotal))
 		table.Print()
 
 	},
 }
-
-
-func secondsToHoursAndMinutes(inSeconds int) string {
-	minutes := inSeconds / 60
-	hours := minutes / 60
-	seconds := minutes % 60
-	return fmt.Sprintf("%d:%02d", hours, seconds)
-}
-
 
 //Initialize commands and options
 func init() {

@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"errors"
 	"io"
+	"math/rand"
 	"os"
 	"os/exec"
-	"testing"
 	"reflect"
 	"strconv"
+	"testing"
 	"time"
-	"math/rand"
 )
 
 type TestData struct {
@@ -84,10 +84,10 @@ func TestGetApi(t *testing.T) {
 }
 
 type TestStruct struct {
-	Name string `json:"name"`
+	Name  string `json:"name"`
 	Value int
-	Nest struct {
-		Name string
+	Nest  struct {
+		Name  string
 		Value int `json:"val"`
 	}
 }
@@ -96,12 +96,11 @@ func TestGetStructVals(t *testing.T) {
 	rand.Seed(time.Now().Unix())
 	ts := new(TestStruct)
 	for i := 0; i < 666; i++ {
-		ts.Name = RandStringBytesMaskImprSrc(rand.Int()%32)
+		ts.Name = RandStringBytesMaskImprSrc(rand.Int() % 32)
 		ts.Value = rand.Int()
-		ts.Nest.Name = RandStringBytesMaskImprSrc(rand.Int()%32)
+		ts.Nest.Name = RandStringBytesMaskImprSrc(rand.Int() % 32)
 		ts.Nest.Value = rand.Int()
 		res := getStructVals(*ts)
-		t.Log(ts)
 		if res[0] != ts.Name || res[1] != strconv.Itoa(ts.Value) || res[2] != ts.Nest.Name || res[3] != strconv.Itoa(ts.Nest.Value) {
 			t.Fatal("struct values not correctly determined", ts)
 		}
@@ -117,6 +116,30 @@ func TestGetStructTags(t *testing.T) {
 	}
 }
 
+type TimePair struct {
+	Seconds     int
+	Stringified string
+}
+
+func TestSecondsToHoursAndMinutes(t *testing.T) {
+
+	times := []TimePair{
+		TimePair{60, "0:01"},
+		TimePair{600, "0:10"},
+		TimePair{86400, "24:00"},
+		TimePair{5400, "1:30"},
+	}
+
+	for _, v := range times {
+		out := secondsToHoursAndMinutes(v.Seconds)
+		if out != v.Stringified {
+			t.Fatal("time was not calculated correctly", out, v.Stringified)
+		}
+	}
+
+}
+
+// HELPER FUNCTIONS
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const (

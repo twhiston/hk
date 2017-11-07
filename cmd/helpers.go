@@ -61,6 +61,13 @@ func getStructTags(resp interface{}) []string {
 	return data
 }
 
+func secondsToHoursAndMinutes(inSeconds int) string {
+	minutes := inSeconds / 60
+	hours := minutes / 60
+	seconds := minutes % 60
+	return fmt.Sprintf("%d:%02d", hours, seconds)
+}
+
 func HandleError(err error) {
 	if err != nil {
 		log.Fatalln(err)
