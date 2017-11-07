@@ -2,6 +2,9 @@
 
 CLI tools for hakuna.ch
 
+[ ![Codeship Status for twhiston/hk](https://app.codeship.com/projects/c134b890-a619-0135-4ff4-16f7c16b7dca/status?branch=master)](https://app.codeship.com/projects/255432)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5d777742d71a44679e3a513c3144c71f)](https://www.codacy.com/app/twhiston/hk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=twhiston/hk&amp;utm_campaign=Badge_Grade)
+
 ## Install
 
 `go get -u github.com/twhiston/hk`

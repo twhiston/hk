@@ -1,0 +1,5 @@
+- type: parallel
+  steps:
+    - name: golang test and coverage push
+      service: app
+      command: /go/scripts/test.sh

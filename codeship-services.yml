@@ -1,0 +1,7 @@
+# Codeship specific docker compose file
+version: "2"
+
+services:
+  app:
+    build: .
+    encrypted_env_file: env.encrypted

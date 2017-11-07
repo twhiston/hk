@@ -1,0 +1,1 @@
+FROM tomwhiston/micro-golang:codacy
