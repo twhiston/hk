@@ -6,12 +6,12 @@ import (
 	"time"
 )
 
-func FillStartTimerData(cmd *cobra.Command, args []string, payload *TimerStartPayload) error {
-	payload.Id = 1
+func fillStartTimerData(cmd *cobra.Command, args []string, payload *TimerStartPayload) error {
+	payload.ID = 1
 	return nil
 }
 
-func FillTimeEntryData(cmd *cobra.Command, args []string, payload *TimeEntryPayload) error {
+func fillTimeEntryData(cmd *cobra.Command, args []string, payload *TimeEntryPayload) error {
 	starts, err := cmd.Flags().GetString("start")
 	HandleError(err)
 	if starts == "" {
@@ -38,13 +38,13 @@ func FillTimeEntryData(cmd *cobra.Command, args []string, payload *TimeEntryPayl
 	payload.Starts = starts
 	payload.Ends = ends
 	payload.TimeType = timeid
-	payload.ProjectId = projectid
+	payload.ProjectID = projectid
 	payload.Note = note
 
 	return nil
 }
 
-func TimeParamHandler(params *map[string]string) error {
+func timeParamHandler(params *map[string]string) error {
 	if (*params)["date"] == "" || (*params)["date"] == "today" || (*params)["date"] == "t" {
 		(*params)["date"] = time.Now().Local().Format("2006-01-02")
 	} else if (*params)["date"] == "yesterday" || (*params)["date"] == "y" {

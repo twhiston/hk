@@ -1,6 +1,6 @@
-package main
+//+build ignore
 
-// +build ignore
+package main
 
 import (
 	"github.com/twhiston/hk/cmd"

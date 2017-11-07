@@ -9,7 +9,7 @@ var {{ .Id }}Cmd = &cobra.Command{
 	        HandleError(errors.New("argument {{ .Index.Arg }} is required for this command"))
 	    }
 	    {{ end }}
-		api := GetApi()
+		api := GetAPI()
 		resp := new({{ .ResponseType }})
 		{{ if .Params }}
 		querystring := make(map[string]string, {{ len .Params }})

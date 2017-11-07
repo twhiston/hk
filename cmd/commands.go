@@ -21,7 +21,7 @@ This returns all times for the current day, including the running timer and a su
 		//TODO does not really work at the moment as both structs have different columns
 		//This means that we need to actually extract the duration data and present it in a different way.
 		//Should be easy right :P
-		api := GetApi()
+		api := GetAPI()
 		resp := new(TimeEntryResponseArray)
 
 		querystring := make(map[string]string, 1)

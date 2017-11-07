@@ -2,14 +2,14 @@ package cmd
 
 //User represents a user type in Hakuna
 type User struct {
-	Id    int      `json:"id"`
+	ID    int      `json:"id"`
 	Name  string   `json:"name"`
 	Teams []string `json:"teams"`
 }
 
 //TimerType represents a timer type in Hakuna
 type TimerType struct {
-	Id       int    `json:"id"`
+	ID       int    `json:"id"`
 	Name     string `json:"name"`
 	Type     string `json:"type"`
 	Excluded bool   `json:"excluded_from_calculations"`
@@ -17,7 +17,7 @@ type TimerType struct {
 
 //Project represents a project item embedded in another type
 type Project struct {
-	Id       int    `json:"id"`
+	ID       int    `json:"id"`
 	Name     string `json:"name"`
 	Archived bool   `json:"archived"`
 }
@@ -37,7 +37,7 @@ type PingResponse struct {
 	Pong string `json:"pong"`
 }
 
-//TimerType represents a timer type in Hakuna
+//TimerResponse represents a timer response from Hakuna
 type TimerResponse struct {
 	Date            string    `json:"date"`
 	Start           string    `json:"start_time"`
@@ -54,7 +54,7 @@ type TimeEntryResponseArray []TimeEntryResponse
 
 //TimeEntryResponse represents a time entry retrieved from hakuna
 type TimeEntryResponse struct {
-	Id              int       `json:"id"`
+	ID              int       `json:"id"`
 	Starts          string    `json:"starts"`
 	Ends            string    `json:"ends"`
 	Duration        string    `json:"duration"`
@@ -67,7 +67,7 @@ type TimeEntryResponse struct {
 
 //TimerTypesResponse represents an slice of possible timer types from the Hakuna API
 type TimerTypesResponse []struct {
-	Id       int    `json:"id"`
+	ID       int    `json:"id"`
 	Name     string `json:"name"`
 	Type     string `json:"type"`
 	Archived bool   `json:"archived"`
@@ -76,7 +76,7 @@ type TimerTypesResponse []struct {
 
 //ProjectResponse represents an slice of  project responses in Hakuna
 type ProjectResponse []struct {
-	Id       int      `json:"id"`
+	ID       int      `json:"id"`
 	Name     string   `json:"name"`
 	Archived bool     `json:"archived'"`
 	Teams    []string `json:"teams,omitempty"`
@@ -84,9 +84,9 @@ type ProjectResponse []struct {
 
 //TimerStartPayload is passed when starting a new timer
 type TimerStartPayload struct {
-	Id        int    `json:"time_type_id"`
+	ID        int    `json:"time_type_id"`
 	Start     string `json:"start_time,omitempty"`
-	ProjectId string `json:"project_id,omitempty"`
+	ProjectID string `json:"project_id,omitempty"`
 	Note      string `json:"note,omitempty"`
 }
 
@@ -100,6 +100,6 @@ type TimeEntryPayload struct {
 	Starts    string `json:"starts"`
 	Ends      string `json:"ends"`
 	TimeType  int    `json:"time_type_id"`
-	ProjectId int    `json:"project_id,omitempty"`
+	ProjectID int    `json:"project_id,omitempty"`
 	Note      string `json:"note"`
 }

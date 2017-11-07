@@ -77,7 +77,7 @@ func TestHandleError(t *testing.T) {
 
 func TestGetApi(t *testing.T) {
 	// Not a lot to test with this as it just depends on having the viper credentials or will die at runtime
-	api := GetApi()
+	api := GetAPI()
 	if reflect.TypeOf(api).String() != "*gopencils.Resource" {
 		t.Fatal("API must be a gopencils resource")
 	}

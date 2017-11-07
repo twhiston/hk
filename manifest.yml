@@ -37,7 +37,7 @@ commands:
       path: time_entries
       hasResponse: true
       array: true
-      parameterHandler: TimeParamHandler
+      parameterHandler: timeParamHandler
       params:
         - name: date
           type: string
@@ -62,7 +62,7 @@ commands:
       responseType: TimerResponse
       path: timer
       payloadType: TimerStartPayload
-      postDataHandler: FillStartTimerData
+      postDataHandler: fillStartTimerData
       expectedStatus: 201
     - id: create
       parent: time
@@ -72,7 +72,7 @@ commands:
       path: time_entries
       payloadType: TimeEntryPayload
       responseType: TimeEntryResponse
-      postDataHandler: FillTimeEntryData
+      postDataHandler: fillTimeEntryData
       hasResponse: true
       expectedStatus: 201
       params:

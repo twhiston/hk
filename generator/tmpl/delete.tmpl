@@ -9,11 +9,11 @@ var {{ .Id }}Cmd = &cobra.Command{
 	        HandleError(errors.New("argument {{ .Index.Arg }} is required for this command"))
 	    }
 	    {{ end }}
-		api := GetApi()
+		api := GetAPI()
 		r, _ :=  api.Res("{{ .Path }}").{{ if .Index.Required }}Id(args[{{ .Index.Arg }}]).{{ end }}Delete()
 		{{ if gt .ExpectedStatus 0 }}
         if r.Raw.StatusCode != {{ .ExpectedStatus }} {
-            defer r.Raw.Body.Close()
+            defer deferredBodyClose(r)
         	bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
         	HandleError(err)
         	HandleError(errors.New(string(bodyBytes)))

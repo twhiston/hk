@@ -3,7 +3,7 @@ var {{ .Id }}Cmd = &cobra.Command{
 	Short: "{{ .Description }}",
 	Long:  `{{ .Long }}`,
 	Run: func(cmd *cobra.Command, args []string) {
-		api := GetApi()
+		api := GetAPI()
 		resp := new({{ .ResponseType }})
 		payload := new({{ .PayloadType }})
 		{{ if .PostDataHandler -}}
@@ -15,7 +15,7 @@ var {{ .Id }}Cmd = &cobra.Command{
 		HandleError(err)
 		{{ if gt .ExpectedStatus 0 }}
 		if r.Raw.StatusCode != {{ .ExpectedStatus }} {
-            defer r.Raw.Body.Close()
+            defer deferredBodyClose(r)
         	bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
         	HandleError(err)
         	HandleError(errors.New(string(bodyBytes)))

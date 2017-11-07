@@ -11,7 +11,8 @@ import (
 	"net/http"
 )
 
-func GetApi() *gopencils.Resource {
+//GetAPI returns a gopencils resource ready configured to make calls on
+func GetAPI() *gopencils.Resource {
 	domain := viper.GetString("hakuna.domain")
 	api := gopencils.Api("https://" + domain + ".hakuna.ch/api/v1/")
 	api.Headers = make(http.Header, 2)
@@ -20,6 +21,7 @@ func GetApi() *gopencils.Resource {
 	return api
 }
 
+//PrintResponse takes some kind of API response and tries to render it as a table
 func PrintResponse(resp interface{}) {
 	table := clitable.New()
 	//Get api response tags for the header
@@ -68,8 +70,16 @@ func secondsToHoursAndMinutes(inSeconds int) string {
 	return fmt.Sprintf("%d:%02d", hours, seconds)
 }
 
+//HandleError simply logs the error and hard quits the app
 func HandleError(err error) {
 	if err != nil {
 		log.Fatalln(err)
+	}
+}
+
+func deferredBodyClose(r *gopencils.Resource) {
+	err := r.Raw.Body.Close()
+	if err != nil {
+		log.Fatal(err)
 	}
 }

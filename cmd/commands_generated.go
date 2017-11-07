@@ -18,7 +18,7 @@ var statsCmd = &cobra.Command{
 	Long:  `returns the /overview endpoint`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		api := GetApi()
+		api := GetAPI()
 		resp := new(StatsResponse)
 
 		_, err := api.Res("overview", resp).Get()
@@ -35,7 +35,7 @@ var timerCmd = &cobra.Command{
 	Long:  `Get the current timer, or use subcommands to control timers`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		api := GetApi()
+		api := GetAPI()
 		resp := new(TimerResponse)
 
 		_, err := api.Res("timer", resp).Get()
@@ -52,7 +52,7 @@ var typesCmd = &cobra.Command{
 	Long:  `returns the possible timer options for your hakuna instance, use these id's with timer commands`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		api := GetApi()
+		api := GetAPI()
 		resp := new(TimerTypesResponse)
 
 		_, err := api.Res("time_types", resp).Get()
@@ -75,7 +75,7 @@ var projectsCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		api := GetApi()
+		api := GetAPI()
 		resp := new(ProjectResponse)
 
 		_, err := api.Res("projects", resp).Get()
@@ -90,7 +90,7 @@ var timeCmd = &cobra.Command{
 	Long:  `get time entries for a specific date`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		api := GetApi()
+		api := GetAPI()
 		resp := new(TimeEntryResponseArray)
 
 		querystring := make(map[string]string, 1)
@@ -99,7 +99,7 @@ var timeCmd = &cobra.Command{
 		HandleError(e)
 		querystring["date"] = value
 
-		pe := TimeParamHandler(&querystring)
+		pe := timeParamHandler(&querystring)
 		HandleError(pe)
 
 		_, err := api.Res("time_entries", resp).Get(querystring)
@@ -126,7 +126,7 @@ var entryCmd = &cobra.Command{
 			HandleError(errors.New("argument 0 is required for this command"))
 		}
 
-		api := GetApi()
+		api := GetAPI()
 		resp := new(TimeEntryResponse)
 
 		_, err := api.Res("time_entries", resp).Id(args[0]).Get()
@@ -144,17 +144,17 @@ var startCmd = &cobra.Command{
 	Short: "Starts a new timer",
 	Long:  `Creates a new running timer starting from now`,
 	Run: func(cmd *cobra.Command, args []string) {
-		api := GetApi()
+		api := GetAPI()
 		resp := new(TimerResponse)
 		payload := new(TimerStartPayload)
 		// Payload renderer must have signature (cmd *cobra.Command, args []string, payload *TimerStartPayload) (*TimerStartPayload, error)
-		err := FillStartTimerData(cmd, args, payload)
+		err := fillStartTimerData(cmd, args, payload)
 		HandleError(err)
 		r, err := api.Res("timer", resp).Post(payload)
 		HandleError(err)
 
 		if r.Raw.StatusCode != 201 {
-			defer r.Raw.Body.Close()
+			defer deferredBodyClose(r)
 			bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
 			HandleError(err)
 			HandleError(errors.New(string(bodyBytes)))
@@ -167,17 +167,17 @@ var createCmd = &cobra.Command{
 	Short: "Create a time entry in the calendar",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		api := GetApi()
+		api := GetAPI()
 		resp := new(TimeEntryResponse)
 		payload := new(TimeEntryPayload)
 		// Payload renderer must have signature (cmd *cobra.Command, args []string, payload *TimeEntryPayload) (*TimeEntryPayload, error)
-		err := FillTimeEntryData(cmd, args, payload)
+		err := fillTimeEntryData(cmd, args, payload)
 		HandleError(err)
 		r, err := api.Res("time_entries", resp).Post(payload)
 		HandleError(err)
 
 		if r.Raw.StatusCode != 201 {
-			defer r.Raw.Body.Close()
+			defer deferredBodyClose(r)
 			bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
 			HandleError(err)
 			HandleError(errors.New(string(bodyBytes)))
@@ -195,14 +195,14 @@ var stopCmd = &cobra.Command{
 	Short: "stop a timer",
 	Long:  `stops a timer and optionally sets a stop time`,
 	Run: func(cmd *cobra.Command, args []string) {
-		api := GetApi()
+		api := GetAPI()
 		resp := new(TimeEntryResponse)
 		payload := new(TimerStopPayload)
 
 		r, err := api.Res("timer", resp).Put(payload)
 		HandleError(err)
 		if r.Raw.StatusCode != 200 {
-			defer r.Raw.Body.Close()
+			deferredBodyClose(r)
 			bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
 			HandleError(err)
 			HandleError(errors.New(string(bodyBytes)))
@@ -220,11 +220,11 @@ var cancelCmd = &cobra.Command{
 	Long:  `deletes the currently running timer`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		api := GetApi()
+		api := GetAPI()
 		r, _ := api.Res("timer").Delete()
 
 		if r.Raw.StatusCode != 205 {
-			defer r.Raw.Body.Close()
+			defer deferredBodyClose(r)
 			bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
 			HandleError(err)
 			HandleError(errors.New(string(bodyBytes)))
@@ -243,11 +243,11 @@ var deleteCmd = &cobra.Command{
 			HandleError(errors.New("argument 0 is required for this command"))
 		}
 
-		api := GetApi()
+		api := GetAPI()
 		r, _ := api.Res("time_entries").Id(args[0]).Delete()
 
 		if r.Raw.StatusCode != 204 {
-			defer r.Raw.Body.Close()
+			defer deferredBodyClose(r)
 			bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
 			HandleError(err)
 			HandleError(errors.New(string(bodyBytes)))
