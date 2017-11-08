@@ -273,6 +273,7 @@ func init() {
 	timeCmd.AddCommand(entryCmd)
 
 	timerCmd.AddCommand(startCmd)
+	startCmd.Flags().Int("id", 1, "enter the id of the timer payload, should correspond to a timer type ID, default 1")
 
 	timeCmd.AddCommand(createCmd)
 	createCmd.Flags().String("start", "", "enter the start date in the format yyyy-dd-mmThh:mm")

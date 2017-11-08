@@ -64,6 +64,11 @@ commands:
       payloadType: TimerStartPayload
       postDataHandler: fillStartTimerData
       expectedStatus: 201
+      params:
+        - name: id
+          type: int
+          usage: enter the id of the timer payload, should correspond to a timer type ID, default 1
+          value: 1
     - id: create
       parent: time
       description: Create a time entry in the calendar

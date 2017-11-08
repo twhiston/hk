@@ -54,11 +54,10 @@ sum of all times, this means that you can quickly use this command to get an ove
 ## Generated Code
 
 All the commands are generated from the manifest.yml file using the code in the generator folder
-To generate the output simple run `go generate` in the root folder
+To generate the output simply run `go generate` in the root folder
 
 ## TODO
 
 - Generate code for command tests
 - Cover everything else with tests
-- consolidate templates for verbs in to a single one
-- today command that can give you the total of your day plus any running timers
+- Consolidate templates for verbs in to a single one
