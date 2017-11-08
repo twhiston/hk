@@ -4,6 +4,7 @@ CLI tools for hakuna.ch
 
 [ ![Codeship Status for twhiston/hk](https://app.codeship.com/projects/c134b890-a619-0135-4ff4-16f7c16b7dca/status?branch=master)](https://app.codeship.com/projects/255432)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5d777742d71a44679e3a513c3144c71f)](https://www.codacy.com/app/twhiston/hk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=twhiston/hk&amp;utm_campaign=Badge_Grade)
+[![Go Report Card](https://goreportcard.com/badge/github.com/twhiston/hk)](https://goreportcard.com/report/github.com/twhiston/hk)
 
 ## Install
 
@@ -34,6 +35,12 @@ Currently you cannot update an entry or perform any absence functions. Coming so
 
 use `hk --help` or `hk {command} --help` to find out options and further sub-commands
 
+### time
+
+The time command has some special case options to make it more useful:
+- With no option will take todays date
+- As well as dates in the api format of yyyy-mm-dd you can use `yesterday` or `y` to get yesterdays details
+
 ## Additional Commands
 
 In addition to the generated commands there are custom commands that dont only return the API functionality
@@ -42,11 +49,6 @@ In addition to the generated commands there are custom commands that dont only r
 
 using the `hk today` command you can see your total for today including any active timers, and it displays a
 sum of all times, this means that you can quickly use this command to get an overview of your day
-
-### time
-
-The time command with no option will take todays date, the option --date allows you to specify a date to query
-As well as dates in the api format of yyyy-mm-dd you can use `yesterday` or `y` to get yesterdays details
 
 
 ## Generated Code

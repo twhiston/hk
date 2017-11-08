@@ -6,15 +6,16 @@ import (
 	"github.com/twhiston/hk/cmd"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"log"
 	"os"
+	"os/exec"
 	"strings"
 	"text/template"
-	"log"
 )
 
 type genDataSet struct {
-	Pkg     string   `yaml:"pkg,omitempty"`
-	Imports []string `yaml:"import,omitempty"`
+	Pkg      string   `yaml:"pkg,omitempty"`
+	Imports  []string `yaml:"import,omitempty"`
 	Commands struct {
 		Get    []genGetData  `yaml:"get,omitempty"`
 		Post   []genPostData `yaml:"post,omitempty"`
@@ -44,7 +45,7 @@ type genIndexData struct {
 }
 
 type genPostData struct {
-	genGetData             `yaml:",inline"`
+	genGetData      `yaml:",inline"`
 	PayloadType     string `yaml:"payloadType,omitempty"`
 	PostDataHandler string `yaml:"postDataHandler,omitempty"`
 }
@@ -95,7 +96,7 @@ func main() {
 
 	f, err := os.Create("cmd/commands_generated.go")
 	cmd.HandleError(err)
-	defer func(r *os.File){
+	defer func(r *os.File) {
 		err = r.Close()
 		if err != nil {
 			log.Fatal(err)
@@ -104,5 +105,8 @@ func main() {
 
 	err = t.ExecuteTemplate(f, "file.tmpl", &dataset)
 	cmd.HandleError(err)
+
+	formatter := exec.Command("gofmt", "-s", "-w", "cmd/commands_generated.go")
+	cmd.HandleError(formatter.Run())
 
 }

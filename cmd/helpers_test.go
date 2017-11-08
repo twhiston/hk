@@ -124,10 +124,10 @@ type TimePair struct {
 func TestSecondsToHoursAndMinutes(t *testing.T) {
 
 	times := []TimePair{
-		TimePair{60, "0:01"},
-		TimePair{600, "0:10"},
-		TimePair{86400, "24:00"},
-		TimePair{5400, "1:30"},
+		{60, "0:01"},
+		{600, "0:10"},
+		{86400, "24:00"},
+		{5400, "1:30"},
 	}
 
 	for _, v := range times {
