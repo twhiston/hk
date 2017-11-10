@@ -3,6 +3,7 @@
 package main
 
 import (
+	"flag"
 	"github.com/twhiston/hk/cmd"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -14,17 +15,13 @@ import (
 )
 
 type genDataSet struct {
-	Pkg      string   `yaml:"pkg,omitempty"`
-	Imports  []string `yaml:"import,omitempty"`
-	Commands struct {
-		Get    []genGetData  `yaml:"get,omitempty"`
-		Post   []genPostData `yaml:"post,omitempty"`
-		Put    []genPostData `yaml:"put,omitempty"`
-		Delete []genGetData  `yaml:"delete,omitempty"`
-	} `yaml:"commands"`
+	Pkg      string           `yaml:"pkg,omitempty"`
+	Imports  []string         `yaml:"import,omitempty"`
+	Commands []genCommandData `yaml:"commands"`
 }
 
-type genGetData struct {
+type genCommandData struct {
+	Type             string                `yaml:"type"`
 	ID               string                `yaml:"id,omitempty"`
 	Parent           string                `yaml:"parent,omitempty"`
 	ArrayResponse    bool                  `yaml:"array,omitempty"`
@@ -37,17 +34,13 @@ type genGetData struct {
 	HasResponse      bool                  `yaml:"hasResponse,omitempty"`
 	Index            genIndexData          `yaml:"index,omitempty"`
 	ExpectedStatus   int                   `yaml:"expectedStatus"`
+	PayloadType      string                `yaml:"payloadType,omitempty"`
+	PostDataHandler  string                `yaml:"postDataHandler,omitempty"`
 }
 
 type genIndexData struct {
 	Arg      int  `yaml:"index,omitempty"`
 	Required bool `yaml:"required,omitempty"`
-}
-
-type genPostData struct {
-	genGetData      `yaml:",inline"`
-	PayloadType     string `yaml:"payloadType,omitempty"`
-	PostDataHandler string `yaml:"postDataHandler,omitempty"`
 }
 
 type genCommandOption struct {
@@ -63,16 +56,18 @@ type genCommandParameter genCommandOption
 
 func newGenDataSet() *genDataSet {
 	gds := new(genDataSet)
-	gds.Pkg = "cmd" //TODO - make dynamic
+	gds.Pkg = pkgFlag
 	gds.Imports = make([]string, 0)
-	gds.Commands.Delete = make([]genGetData, 0)
-	gds.Commands.Put = make([]genPostData, 0)
-	gds.Commands.Post = make([]genPostData, 0)
-	gds.Commands.Get = make([]genGetData, 0)
+	gds.Commands = make([]genCommandData, 0)
 	return gds
 }
 
+var pkgFlag string
+
 func main() {
+
+	flag.StringVar(&pkgFlag, "pkg", "cmd", "package to output generated code in")
+	flag.Parse()
 
 	//TODO - put template is basically post. could refactor this to use the same one?
 	//TODO - optional dynamic generation of payload renderer stubs
@@ -87,7 +82,7 @@ func main() {
 	t := template.New("hk")
 
 	funcMap := template.FuncMap{
-		"ToUpper": strings.Title,
+		"Title": strings.Title,
 	}
 	t.Funcs(funcMap)
 

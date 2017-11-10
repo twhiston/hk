@@ -59,5 +59,4 @@ To generate the output simply run `go generate` in the root folder
 ## TODO
 
 - Generate code for command tests
-- Cover everything else with tests
 - Consolidate templates for verbs in to a single one

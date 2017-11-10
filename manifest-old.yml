@@ -4,22 +4,20 @@ import:
   - "io/ioutil"
   - "github.com/twhiston/clitable"
 commands:
+  get:
     - id: stats
-      type: get
       description: get your current stats
       long: returns the /overview endpoint
       responseType: StatsResponse
       path: overview
       hasResponse: true
     - id: timer
-      type: get
       description: Do things with timers
       long: Get the current timer, or use subcommands to control timers
       responseType: TimerResponse
       path: timer
       hasResponse: true
     - id: types
-      type: get
       parent: timer
       description: get the types of timer available
       long: returns the possible timer options for your hakuna instance, use these id's with timer commands
@@ -28,13 +26,11 @@ commands:
       hasResponse: true
       array: true
     - id: projects
-      type: get
       array: true
       description: get a list of all projects
       responseType: ProjectResponse
       path: projects
     - id: time
-      type: get
       description: get time entries
       long: get time entries for a specific date
       responseType: TimeEntryResponseArray
@@ -49,7 +45,6 @@ commands:
           value: "\"\""
           short: d
     - id: entry
-      type: get
       parent: time
       description: get a time entry specified by an id
       long: returns a specific time entry, which is given as an argument to the command
@@ -59,9 +54,8 @@ commands:
       index:
         arg: 0
         required: true
-
+  post:
     - id: start
-      type: post
       parent: timer
       description: Starts a new timer
       long: Creates a new running timer starting from now
@@ -76,7 +70,6 @@ commands:
           usage: enter the id of the timer payload, should correspond to a timer type ID, default 1
           value: 1
     - id: create
-      type: post
       parent: time
       description: Create a time entry in the calendar
       long: ""
@@ -108,9 +101,8 @@ commands:
           type: string
           usage: optional note to add to the entry
           value: "\"\""
-
+  put:
     - id: stop
-      type: put
       parent: timer
       description: stop a timer
       long: stops a timer and optionally sets a stop time
@@ -118,17 +110,15 @@ commands:
       path: timer
       payloadType: TimerStopPayload
       hasResponse: true
-      expectedStatus: 200
-
+  delete:
     - id: cancel
-      type: delete
       parent: timer
       description: cancel a timer
       long: deletes the currently running timer
+      responseType: TimerResponse
       path: timer
       expectedStatus: 205
     - id: delete
-      type: delete
       parent: time
       description: delete a time
       long: deletes a time via it's id.

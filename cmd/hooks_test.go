@@ -61,6 +61,7 @@ func TestTimeParamHandler(t *testing.T) {
 // Testing for this is a bit more laborious than testing a hand written function call where we would probably pass in the pre verified parameters
 // As this is invoked from generated code we have to perform all the logic within the routine. Which is why this test is as it is.
 // It kind of sucks that we test the specific message returned by the error but we want to verify at which step of the procedure the error occurred
+// nolint
 func TestFillTimeEntryData(t *testing.T) {
 
 	startVal := "2017-05-10T23:23"

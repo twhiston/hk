@@ -10,8 +10,6 @@ import (
 	"io/ioutil"
 )
 
-// GET COMMANDS
-
 var statsCmd = &cobra.Command{
 	Use:   "stats",
 	Short: "get your current stats",
@@ -19,6 +17,7 @@ var statsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
+
 		resp := new(StatsResponse)
 
 		_, err := api.Res("overview", resp).Get()
@@ -36,6 +35,7 @@ var timerCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
+
 		resp := new(TimerResponse)
 
 		_, err := api.Res("timer", resp).Get()
@@ -53,6 +53,7 @@ var typesCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
+
 		resp := new(TimerTypesResponse)
 
 		_, err := api.Res("time_types", resp).Get()
@@ -66,6 +67,7 @@ var typesCmd = &cobra.Command{
 			table.AddRow(getStructVals(v)...)
 		}
 		table.Print()
+
 	},
 }
 
@@ -76,6 +78,7 @@ var projectsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
+
 		resp := new(ProjectResponse)
 
 		_, err := api.Res("projects", resp).Get()
@@ -91,10 +94,10 @@ var timeCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
+
 		resp := new(TimeEntryResponseArray)
 
 		querystring := make(map[string]string, 1)
-
 		value, e := cmd.Flags().GetString("date")
 		HandleError(e)
 		querystring["date"] = value
@@ -113,6 +116,7 @@ var timeCmd = &cobra.Command{
 			table.AddRow(getStructVals(v)...)
 		}
 		table.Print()
+
 	},
 }
 
@@ -127,6 +131,7 @@ var entryCmd = &cobra.Command{
 		}
 
 		api := GetAPI()
+
 		resp := new(TimeEntryResponse)
 
 		_, err := api.Res("time_entries", resp).Id(args[0]).Get()
@@ -137,16 +142,18 @@ var entryCmd = &cobra.Command{
 	},
 }
 
-// POST COMMANDS
-
 var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Starts a new timer",
 	Long:  `Creates a new running timer starting from now`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		api := GetAPI()
+
 		resp := new(TimerResponse)
+
 		payload := new(TimerStartPayload)
+
 		// Payload renderer must have signature (cmd *cobra.Command, args []string, payload *TimerStartPayload) (*TimerStartPayload, error)
 		err := fillStartTimerData(cmd, args, payload)
 		HandleError(err)
@@ -162,14 +169,19 @@ var startCmd = &cobra.Command{
 
 	},
 }
+
 var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a time entry in the calendar",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		api := GetAPI()
+
 		resp := new(TimeEntryResponse)
+
 		payload := new(TimeEntryPayload)
+
 		// Payload renderer must have signature (cmd *cobra.Command, args []string, payload *TimeEntryPayload) (*TimeEntryPayload, error)
 		err := fillTimeEntryData(cmd, args, payload)
 		HandleError(err)
@@ -188,31 +200,32 @@ var createCmd = &cobra.Command{
 	},
 }
 
-// PUT COMMANDS
-
 var stopCmd = &cobra.Command{
 	Use:   "stop",
 	Short: "stop a timer",
 	Long:  `stops a timer and optionally sets a stop time`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		api := GetAPI()
+
 		resp := new(TimeEntryResponse)
+
 		payload := new(TimerStopPayload)
 
 		r, err := api.Res("timer", resp).Put(payload)
 		HandleError(err)
+
 		if r.Raw.StatusCode != 200 {
-			deferredBodyClose(r)
+			defer deferredBodyClose(r)
 			bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
 			HandleError(err)
 			HandleError(errors.New(string(bodyBytes)))
 		}
+
 		PrintResponse(*resp)
 
 	},
 }
-
-// DELETE COMMANDS
 
 var cancelCmd = &cobra.Command{
 	Use:   "cancel",
@@ -221,7 +234,9 @@ var cancelCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
-		r, _ := api.Res("timer").Delete()
+
+		r, err := api.Res("timer").Delete()
+		HandleError(err)
 
 		if r.Raw.StatusCode != 205 {
 			defer deferredBodyClose(r)
@@ -244,7 +259,9 @@ var deleteCmd = &cobra.Command{
 		}
 
 		api := GetAPI()
-		r, _ := api.Res("time_entries").Id(args[0]).Delete()
+
+		r, err := api.Res("time_entries").Id(args[0]).Delete()
+		HandleError(err)
 
 		if r.Raw.StatusCode != 204 {
 			defer deferredBodyClose(r)

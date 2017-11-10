@@ -9,36 +9,14 @@ import (
  {{ end }}
 )
 
-// GET COMMANDS
 
-{{range $index, $element := .Commands.Get}}
-    {{- template "get.tmpl" $element }}
-{{ end }}
-
-// POST COMMANDS
-
-{{range $index, $element := .Commands.Post}}
-    {{- template "post.tmpl" $element }}
-{{ end }}
-
-// PUT COMMANDS
-
-{{range $index, $element := .Commands.Put}}
-    {{- template "put.tmpl" $element }}
-{{ end }}
-
-// DELETE COMMANDS
-
-{{range $index, $element := .Commands.Delete}}
-    {{- template "delete.tmpl" $element }}
+{{range $index, $element := .Commands}}
+    {{- template "command.tmpl" $element }}
 {{ end }}
 
 //Initialize commands and options
 func init() {
-    {{  template "initcode" .Commands.Get -}}
-    {{- template "initcode" .Commands.Post -}}
-    {{- template "initcode" .Commands.Put -}}
-    {{- template "initcode" .Commands.Delete -}}
+    {{  template "initcode" .Commands -}}
 }
 
 {{ define "initcode" }}
@@ -48,7 +26,7 @@ func init() {
 {{- else }}
     {{ $element.Parent }}Cmd.AddCommand({{ $element.ID }}Cmd)
 {{- end }}
-{{ range $i, $param := $element.Params }}    {{ $element.ID }}Cmd.{{ if $param.Persistent }}Persistent{{ end }}Flags().{{ $param.Type | ToUpper }}{{ if $param.Short }}P{{ end }}("{{ $param.Name }}",{{ if $param.Short }} "{{ $param.Short }}",{{ end }} {{ $param.Value }}, "{{ $param.Usage }}")
+{{ range $i, $param := $element.Params }}    {{ $element.ID }}Cmd.{{ if $param.Persistent }}Persistent{{ end }}Flags().{{ $param.Type | Title }}{{ if $param.Short }}P{{ end }}("{{ $param.Name }}",{{ if $param.Short }} "{{ $param.Short }}",{{ end }} {{ $param.Value }}, "{{ $param.Usage }}")
 {{ end -}}
 {{- end -}}
 {{ end }}

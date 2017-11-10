@@ -14,7 +14,7 @@ import (
 //GetAPI returns a gopencils resource ready configured to make calls on
 func GetAPI() *gopencils.Resource {
 	domain := viper.GetString("hakuna.domain")
-	api := gopencils.Api("https://" + domain + ".hakuna.ch/api/v1/")
+	api := gopencils.Api("https://" + domain + ".hakuna.ch/api/v1")
 	api.Headers = make(http.Header, 2)
 	api.Headers.Add("X-Auth-Token", viper.GetString("hakuna.token"))
 	api.Headers.Add("Content-Type", "application/json; charset=utf-8")
@@ -73,7 +73,9 @@ func secondsToHoursAndMinutes(inSeconds int) string {
 //HandleError simply logs the error and hard quits the app
 func HandleError(err error) {
 	if err != nil {
-		log.Fatalln(err)
+		if err.Error() != "EOF" {
+			log.Fatalln(err)
+		}
 	}
 }
 

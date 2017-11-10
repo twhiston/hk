@@ -1,0 +1,70 @@
+var {{ .ID }}Cmd = &cobra.Command{
+	Use:   "{{ .ID }}",
+	Short: "{{ .Description }}",
+	Long:  `{{ .Long }}`,
+	Run: func(cmd *cobra.Command, args []string) {
+
+	    {{ if .Index.Required }}
+	    if len(args) < ({{ .Index.Arg }}+1) {
+	        HandleError(errors.New("argument {{ .Index.Arg }} is required for this command"))
+	    }
+	    {{ end }}
+
+		api := GetAPI()
+		{{ if .ResponseType }}
+		resp := new({{ .ResponseType }})
+		{{ end }}
+
+		{{ if .PayloadType }}
+		payload := new({{ .PayloadType }})
+		{{ end }}
+
+		{{- if and (.Params) (ne .Type "post") }}
+		querystring := make(map[string]string, {{ len .Params }})
+		{{ range $k, $v := .Params -}}
+        value, e := cmd.{{ if $v.Persistent }}Persistent{{ end }}Flags().Get{{ $v.Type | Title }}("{{ $v.Name }}")
+        HandleError(e)
+        querystring["{{ $v.Name }}"] = value
+        {{ end }}
+		{{- end }}
+
+		{{ if .ParameterHandler }}
+		pe := {{ .ParameterHandler }}(&querystring)
+		HandleError(pe)
+		{{ end }}
+
+		{{ if .PostDataHandler -}}
+        // Payload renderer must have signature (cmd *cobra.Command, args []string, payload *{{ .PayloadType }}) (*{{ .PayloadType }}, error)
+        err := {{ .PostDataHandler}}(cmd, args, payload)
+        HandleError(err)
+        {{ end -}}
+
+		{{ if  gt .ExpectedStatus 0 }}r{{ else }}_{{ end }}, err := api.Res("{{ .Path }}" {{ if .ResponseType }}, resp{{ end }}).{{ if .Index.Required }}Id(args[{{ .Index.Arg }}]).{{ end }}{{ .Type | Title }}({{ if and (.Params) (ne .Type "post") }}querystring{{ end }}{{ if .PayloadType }}payload{{ end }})
+		HandleError(err)
+
+		{{ if gt .ExpectedStatus 0 }}
+                if r.Raw.StatusCode != {{ .ExpectedStatus }} {
+                    defer deferredBodyClose(r)
+                	bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
+                	HandleError(err)
+                	HandleError(errors.New(string(bodyBytes)))
+                }
+        {{ end }}
+
+		{{ if .HasResponse -}}
+		{{- if .ArrayResponse }}
+		table := clitable.New()
+        for k, v := range *resp {
+        	if k == 0 {
+        		table.AddRow(getStructTags(v)...)
+        	}
+        	table.AddRow(getStructVals(v)...)
+        }
+        table.Print()
+		{{- else }}
+		PrintResponse(*resp)
+		{{ end }}
+		{{- end }}
+
+	},
+}
