@@ -80,14 +80,6 @@ func initConfig() {
 		}
 	}
 
-	testConfig()
-}
-
-func testConfig() {
-	if viper.GetString("hakuna.token") == "" || viper.GetString("hakuna.domain") == "" {
-		log.Fatal("hakuna.token and hakuna.domain must be present in the configuration file")
-	}
-	if verbose {
-		log.Println("Domain:", viper.GetString("hakuna.domain"))
-	}
+	err := testConfig()
+	HandleError(err)
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"errors"
 	"github.com/bndr/gopencils"
 	"github.com/spf13/viper"
 	"github.com/twhiston/clitable"
@@ -64,10 +65,19 @@ func getStructTags(resp interface{}) []string {
 }
 
 func secondsToHoursAndMinutes(inSeconds int) string {
-	minutes := inSeconds / 60
-	hours := minutes / 60
-	seconds := minutes % 60
-	return fmt.Sprintf("%d:%02d", hours, seconds)
+	hours := inSeconds / (60 * 60)
+	remainder := (inSeconds / 60) % 60
+	return fmt.Sprintf("%d:%02d", hours, remainder)
+}
+
+func testConfig() error {
+	if viper.GetString("hakuna.token") == "" || viper.GetString("hakuna.domain") == "" {
+		return errors.New("hakuna.token and hakuna.domain must be present in the configuration file")
+	}
+	if verbose {
+		log.Println("Domain:", viper.GetString("hakuna.domain"))
+	}
+	return nil
 }
 
 //HandleError simply logs the error and hard quits the app

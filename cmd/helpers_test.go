@@ -3,7 +3,9 @@ package cmd
 import (
 	"bytes"
 	"errors"
+	"github.com/spf13/viper"
 	"io"
+	"log"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -72,6 +74,47 @@ func TestHandleError(t *testing.T) {
 		return
 	}
 	t.Fatalf("process ran with err %v, want exit status 1", err)
+
+}
+
+func TestHandleEofError(t *testing.T) {
+	inErr := errors.New("EOF")
+	HandleError(inErr)
+}
+
+func TestTestConfig(t *testing.T) {
+	err := testConfig()
+	if err == nil {
+		t.Fatal("Invalid config should return an error")
+	}
+
+	viper.Set("hakuna.token", "test")
+
+	err = testConfig()
+	if err == nil {
+		t.Fatal("Invalid config should return an error")
+	}
+
+	viper.Set("hakuna.domain", "test")
+	err = testConfig()
+	if err != nil {
+		t.Fatal("Valid config should not return an error")
+	}
+
+	var buf bytes.Buffer
+	log.SetFlags(0)
+	log.SetOutput(&buf)
+	defer func() {
+		log.SetOutput(os.Stderr)
+	}()
+	verbose = true
+	err = testConfig()
+	if err != nil {
+		t.Fatal("Valid config should not return an error")
+	}
+	if buf.String() != "Domain: test\n" {
+		t.Fatal("incorrect log output", buf.String())
+	}
 
 }
 
