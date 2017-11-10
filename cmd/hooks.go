@@ -24,6 +24,7 @@ func fillOptionalTimeEntryData(cmd *cobra.Command, args []string, payload *TimeE
 	return fillTimeEntryData(cmd, args, payload, true, true)
 }
 
+//nolint
 func fillTimeEntryData(cmd *cobra.Command, args []string, payload *TimeEntryPayload, validate bool, allowBlank bool) error {
 	starts, err := cmd.Flags().GetString("start")
 	if err != nil {
