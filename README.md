@@ -31,7 +31,7 @@ Note that some commands will not be available unless you have an organization ap
 ## Commands
 
 Commands currently cover a large chunk of the api and are described in the manifest.yml file.
-Currently you cannot update an entry or perform any absence functions. Coming soon!
+Organizational commands and acting as other users are not supported currently
 
 use `hk --help` or `hk {command} --help` to find out options and further sub-commands
 
@@ -59,4 +59,3 @@ To generate the output simply run `go generate` in the root folder
 ## TODO
 
 - Generate code for command tests
-- Consolidate templates for verbs in to a single one
