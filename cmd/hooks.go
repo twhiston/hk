@@ -30,10 +30,6 @@ func fillTimeEntryData(cmd *cobra.Command, args []string, payload *TimeEntryPayl
 		return err
 	}
 
-	if allowBlank {
-
-	}
-
 	if (starts == "" && !allowBlank) || (starts != "" && validate) {
 		// Format of this time string layout is EXTREMELY important for parsing to work
 		// https://stackoverflow.com/questions/14106541/go-parsing-date-time-strings-which-are-not-standard-formats
