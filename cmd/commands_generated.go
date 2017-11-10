@@ -183,7 +183,7 @@ var createCmd = &cobra.Command{
 		payload := new(TimeEntryPayload)
 
 		// Payload renderer must have signature (cmd *cobra.Command, args []string, payload *TimeEntryPayload) (*TimeEntryPayload, error)
-		err := fillTimeEntryData(cmd, args, payload)
+		err := fillRequiredTimeEntryData(cmd, args, payload)
 		HandleError(err)
 		r, err := api.Res("time_entries", resp).Post(payload)
 		HandleError(err)
@@ -196,6 +196,38 @@ var createCmd = &cobra.Command{
 		}
 
 		PrintResponse(*resp)
+
+	},
+}
+
+var editCmd = &cobra.Command{
+	Use:   "edit",
+	Short: "Edit a time entry",
+	Long:  ``,
+	Run: func(cmd *cobra.Command, args []string) {
+
+		if len(args) < (0 + 1) {
+			HandleError(errors.New("argument 0 is required for this command"))
+		}
+
+		api := GetAPI()
+
+		resp := new(TimeEntryResponse)
+
+		payload := new(TimeEntryPayload)
+
+		// Payload renderer must have signature (cmd *cobra.Command, args []string, payload *TimeEntryPayload) (*TimeEntryPayload, error)
+		err := fillOptionalTimeEntryData(cmd, args, payload)
+		HandleError(err)
+		r, err := api.Res("time_entries", resp).Id(args[0]).Patch(payload)
+		HandleError(err)
+
+		if r.Raw.StatusCode != 200 {
+			defer deferredBodyClose(r)
+			bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
+			HandleError(err)
+			HandleError(errors.New(string(bodyBytes)))
+		}
 
 	},
 }
@@ -298,6 +330,13 @@ func init() {
 	createCmd.Flags().Int("time-id", 1, "enter the time type id. You can get these with the types command, defaults to 1 which is usually Arbeit")
 	createCmd.Flags().Int("project-id", 0, "optional project id")
 	createCmd.Flags().String("note", "", "optional note to add to the entry")
+
+	timeCmd.AddCommand(editCmd)
+	editCmd.Flags().String("start", "", "enter the start date in the format yyyy-dd-mmThh:mm")
+	editCmd.Flags().String("end", "", "enter the start date in the format yyyy-dd-mmThh:mm")
+	editCmd.Flags().Int("time-id", 1, "enter the time type id. You can get these with the types command, defaults to 1 which is usually Arbeit")
+	editCmd.Flags().Int("project-id", 0, "optional project id")
+	editCmd.Flags().String("note", "", "optional note to add to the entry")
 
 	timerCmd.AddCommand(stopCmd)
 

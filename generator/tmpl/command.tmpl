@@ -19,7 +19,7 @@ var {{ .ID }}Cmd = &cobra.Command{
 		payload := new({{ .PayloadType }})
 		{{ end }}
 
-		{{- if and (.Params) (ne .Type "post") }}
+		{{- if and (.Params) (and (ne .Type "post") (ne .Type "patch")) }}
 		querystring := make(map[string]string, {{ len .Params }})
 		{{ range $k, $v := .Params -}}
         value, e := cmd.{{ if $v.Persistent }}Persistent{{ end }}Flags().Get{{ $v.Type | Title }}("{{ $v.Name }}")
@@ -39,7 +39,7 @@ var {{ .ID }}Cmd = &cobra.Command{
         HandleError(err)
         {{ end -}}
 
-		{{ if  gt .ExpectedStatus 0 }}r{{ else }}_{{ end }}, err := api.Res("{{ .Path }}" {{ if .ResponseType }}, resp{{ end }}).{{ if .Index.Required }}Id(args[{{ .Index.Arg }}]).{{ end }}{{ .Type | Title }}({{ if and (.Params) (ne .Type "post") }}querystring{{ end }}{{ if .PayloadType }}payload{{ end }})
+		{{ if  gt .ExpectedStatus 0 }}r{{ else }}_{{ end }}, err := api.Res("{{ .Path }}" {{ if .ResponseType }}, resp{{ end }}).{{ if .Index.Required }}Id(args[{{ .Index.Arg }}]).{{ end }}{{ .Type | Title }}({{ if and (.Params) (and (ne .Type "post") (ne .Type "patch")) }}querystring{{ end }}{{ if .PayloadType }}payload{{ end }})
 		HandleError(err)
 
 		{{ if gt .ExpectedStatus 0 }}

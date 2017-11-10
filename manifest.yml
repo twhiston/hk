@@ -75,16 +75,16 @@ commands:
           type: int
           usage: enter the id of the timer payload, should correspond to a timer type ID, default 1
           value: 1
+
     - id: create
       type: post
       parent: time
       description: Create a time entry in the calendar
       long: ""
-      responseType:
       path: time_entries
       payloadType: TimeEntryPayload
       responseType: TimeEntryResponse
-      postDataHandler: fillTimeEntryData
+      postDataHandler: fillRequiredTimeEntryData
       hasResponse: true
       expectedStatus: 201
       params:
@@ -108,6 +108,41 @@ commands:
           type: string
           usage: optional note to add to the entry
           value: "\"\""
+
+    - id: edit
+      type: patch
+      parent: time
+      description: Edit a time entry
+      long: ""
+      path: time_entries
+      payloadType: TimeEntryPayload
+      responseType: TimeEntryResponse
+      postDataHandler: fillOptionalTimeEntryData
+      expectedStatus: 200
+      params:
+        - name: start
+          type: string
+          usage: enter the start date in the format yyyy-dd-mmThh:mm
+          value: "\"\""
+        - name: end
+          type: string
+          usage: enter the start date in the format yyyy-dd-mmThh:mm
+          value: "\"\""
+        - name: time-id
+          type: int
+          usage: enter the time type id. You can get these with the types command, defaults to 1 which is usually Arbeit
+          value: 1
+        - name: project-id
+          type: int
+          usage: optional project id
+          value: 0
+        - name: note
+          type: string
+          usage: optional note to add to the entry
+          value: "\"\""
+      index:
+        arg: 0
+        required: true
 
     - id: stop
       type: put

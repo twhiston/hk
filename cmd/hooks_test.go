@@ -72,13 +72,13 @@ func TestFillTimeEntryData(t *testing.T) {
 	var args []string
 	payload := new(TimeEntryPayload)
 
-	err := fillTimeEntryData(cmd, args, payload)
+	err := fillRequiredTimeEntryData(cmd, args, payload)
 	if err == nil || err.Error() != "flag accessed but not defined: start" {
 		t.Fatal("Must have start flag defined")
 	}
 
 	cmd.Flags().String("start", "", "")
-	err = fillTimeEntryData(cmd, args, payload)
+	err = fillRequiredTimeEntryData(cmd, args, payload)
 	_, ok := err.(*time.ParseError)
 	if !ok {
 		t.Fatal("invalid time format strings should fail validation")
@@ -87,13 +87,13 @@ func TestFillTimeEntryData(t *testing.T) {
 	//This time format should pass
 	cmd.Flags().Set("start", startVal)
 
-	err = fillTimeEntryData(cmd, args, payload)
+	err = fillRequiredTimeEntryData(cmd, args, payload)
 	if err.Error() != "flag accessed but not defined: end" {
 		t.Fatal(err)
 	}
 
 	cmd.Flags().String("end", "", "")
-	err = fillTimeEntryData(cmd, args, payload)
+	err = fillRequiredTimeEntryData(cmd, args, payload)
 	_, ok = err.(*time.ParseError)
 	if !ok {
 		t.Fatal("invalid time format strings should fail validation")
@@ -101,33 +101,33 @@ func TestFillTimeEntryData(t *testing.T) {
 
 	cmd.Flags().Set("end", endVal)
 
-	err = fillTimeEntryData(cmd, args, payload)
+	err = fillRequiredTimeEntryData(cmd, args, payload)
 	if err.Error() != "flag accessed but not defined: time-id" {
 		t.Fatal(err)
 	}
 
 	cmd.Flags().Int("time-id", 0, "")
-	err = fillTimeEntryData(cmd, args, payload)
+	err = fillRequiredTimeEntryData(cmd, args, payload)
 	if err.Error() != "time id cannot be less than 1" {
 		t.Fatal(err)
 	}
 
 	cmd.Flags().Set("time-id", strconv.Itoa(timeID))
 
-	err = fillTimeEntryData(cmd, args, payload)
+	err = fillRequiredTimeEntryData(cmd, args, payload)
 	if err.Error() != "flag accessed but not defined: project-id" {
 		t.Fatal(err)
 	}
 
 	cmd.Flags().Int("project-id", 0, "optional project id")
 
-	err = fillTimeEntryData(cmd, args, payload)
+	err = fillRequiredTimeEntryData(cmd, args, payload)
 	if err.Error() != "flag accessed but not defined: note" {
 		t.Fatal(err)
 	}
 	cmd.Flags().String("note", "", "optional note to add to the entry")
 
-	err = fillTimeEntryData(cmd, args, payload)
+	err = fillRequiredTimeEntryData(cmd, args, payload)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -140,7 +140,7 @@ func TestFillTimeEntryData(t *testing.T) {
 	note := "Testing a note"
 	cmd.Flags().Set("note", note)
 	cmd.Flags().Set("project-id", strconv.Itoa(pid))
-	err = fillTimeEntryData(cmd, args, payload)
+	err = fillRequiredTimeEntryData(cmd, args, payload)
 	if err != nil {
 		t.Fatal(err)
 	}

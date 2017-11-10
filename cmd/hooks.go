@@ -16,33 +16,53 @@ func fillStartTimerData(cmd *cobra.Command, args []string, payload *TimerStartPa
 	return nil
 }
 
-func fillTimeEntryData(cmd *cobra.Command, args []string, payload *TimeEntryPayload) error {
+func fillRequiredTimeEntryData(cmd *cobra.Command, args []string, payload *TimeEntryPayload) error {
+	return fillTimeEntryData(cmd, args, payload, true, false)
+}
+
+func fillOptionalTimeEntryData(cmd *cobra.Command, args []string, payload *TimeEntryPayload) error {
+	return fillTimeEntryData(cmd, args, payload, true, true)
+}
+
+func fillTimeEntryData(cmd *cobra.Command, args []string, payload *TimeEntryPayload, validate bool, allowBlank bool) error {
 	starts, err := cmd.Flags().GetString("start")
 	if err != nil {
 		return err
 	}
-	// Format of this time string layout is EXTREMELY important for parsing to work
-	// https://stackoverflow.com/questions/14106541/go-parsing-date-time-strings-which-are-not-standard-formats
-	_, err = time.Parse("2006-02-01T15:04", starts)
-	if err != nil {
-		return err
+
+	if allowBlank {
+
+	}
+
+	if (starts == "" && !allowBlank) || (starts != "" && validate) {
+		// Format of this time string layout is EXTREMELY important for parsing to work
+		// https://stackoverflow.com/questions/14106541/go-parsing-date-time-strings-which-are-not-standard-formats
+		_, err = time.Parse("2006-02-01T15:04", starts)
+		if err != nil {
+			return err
+		}
 	}
 
 	ends, err := cmd.Flags().GetString("end")
 	if err != nil {
 		return err
 	}
-	_, err = time.Parse("2006-02-01T15:04", ends)
-	if err != nil {
-		return err
+	if (ends == "" && !allowBlank) || (ends != "" && validate) {
+		_, err = time.Parse("2006-02-01T15:04", ends)
+		if err != nil {
+			return err
+		}
 	}
 
 	timeid, err := cmd.Flags().GetInt("time-id")
 	if err != nil {
 		return err
 	}
-	if timeid < 1 {
-		return errors.New("time id cannot be less than 1")
+
+	if (timeid == 0 && !allowBlank) || (timeid != 0 && validate) {
+		if timeid < 1 {
+			return errors.New("time id cannot be less than 1")
+		}
 	}
 
 	projectid, err := cmd.Flags().GetInt("project-id")
