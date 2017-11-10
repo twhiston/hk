@@ -93,3 +93,10 @@ func timeParamHandler(params *map[string]string) error {
 	}
 	return nil
 }
+
+func absenceParamHandler(params *map[string]string) error {
+	if (*params)["year"] == "" {
+		(*params)["year"] = time.Now().Local().Format("2006")
+	}
+	return nil
+}

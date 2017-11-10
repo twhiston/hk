@@ -59,6 +59,20 @@ commands:
       index:
         arg: 0
         required: true
+    - id: absences
+      type: get
+      description: Get absences for a specific year
+      long: If no year is supplied will default to the current year
+      responseType: AbsenceResponseArray
+      array: true
+      path: absences
+      parameterHandler: absenceParamHandler
+      hasResponse: true
+      params:
+        - name: year
+          type: string
+          usage: the year to look for
+          value: "\"\""
 
     - id: start
       type: post

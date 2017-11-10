@@ -58,6 +58,21 @@ func TestTimeParamHandler(t *testing.T) {
 
 }
 
+func TestAbsenceParamHandler(t *testing.T) {
+
+	data := make(map[string]string, 1)
+	data["year"] = ""
+	err := absenceParamHandler(&data)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if data["year"] != time.Now().Local().Format("2006") {
+		t.Fatal("year in data does not match this year", data["year"])
+	}
+
+}
+
 // Testing for this is a bit more laborious than testing a hand written function call where we would probably pass in the pre verified parameters
 // As this is invoked from generated code we have to perform all the logic within the routine. Which is why this test is as it is.
 // It kind of sucks that we test the specific message returned by the error but we want to verify at which step of the procedure the error occurred

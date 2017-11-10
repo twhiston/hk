@@ -103,3 +103,40 @@ type TimeEntryPayload struct {
 	ProjectID int    `json:"project_id,omitempty"`
 	Note      string `json:"note"`
 }
+
+//{
+//"id": 148,
+//"start_date": "2016-01-06",
+//"end_date": "2016-01-06",
+//"first_half_day": true,
+//"second_half_day": false,
+//"is_recurring": false,
+//"weekly_repeat_interval": null,
+//"user": {
+//"id": 1,
+//"name": "Ursula Schneider",
+//"teams": [
+//"Administration"
+//]
+//},
+//"time_type": {
+//"id": 10,
+//"name": "Kompensation",
+//"type": "absence",
+//"excluded_from_calculations": true
+//}
+//}
+
+type AbsenceResponseArray []AbsenceResponse
+
+type AbsenceResponse struct {
+	ID                      int       `json:"id"`
+	Starts                  string    `json:"start_date"`
+	Ends                    string    `json:"end_date"`
+	FirstHalfDay            bool      `json:"first_half_day"`
+	SecondHalfDay           bool      `json:"second_half_day"`
+	Recurring               bool      `json:"is_recurring"`
+	WeeklyRepeatingInterval int       `json:"weekly_repeating_interval"`
+	User                    User      `json:"user"`
+	TimeType                TimerType `json:"time_type"`
+}

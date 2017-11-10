@@ -142,6 +142,39 @@ var entryCmd = &cobra.Command{
 	},
 }
 
+var absencesCmd = &cobra.Command{
+	Use:   "absences",
+	Short: "Get absences for a specific year",
+	Long:  `If no year is supplied will default to the current year`,
+	Run: func(cmd *cobra.Command, args []string) {
+
+		api := GetAPI()
+
+		resp := new(AbsenceResponseArray)
+
+		querystring := make(map[string]string, 1)
+		value, e := cmd.Flags().GetString("year")
+		HandleError(e)
+		querystring["year"] = value
+
+		pe := absenceParamHandler(&querystring)
+		HandleError(pe)
+
+		_, err := api.Res("absences", resp).Get(querystring)
+		HandleError(err)
+
+		table := clitable.New()
+		for k, v := range *resp {
+			if k == 0 {
+				table.AddRow(getStructTags(v)...)
+			}
+			table.AddRow(getStructVals(v)...)
+		}
+		table.Print()
+
+	},
+}
+
 var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Starts a new timer",
@@ -320,6 +353,9 @@ func init() {
 	timeCmd.Flags().StringP("date", "d", "", "enter the date that you want to look for details of. If left blank will use todays date")
 
 	timeCmd.AddCommand(entryCmd)
+
+	RootCmd.AddCommand(absencesCmd)
+	absencesCmd.Flags().String("year", "", "the year to look for")
 
 	timerCmd.AddCommand(startCmd)
 	startCmd.Flags().Int("id", 1, "enter the id of the timer payload, should correspond to a timer type ID, default 1")
