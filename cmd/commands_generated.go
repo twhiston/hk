@@ -13,7 +13,7 @@ import (
 var overviewCmd = &cobra.Command{
 	Use:     "overview",
 	Short:   "get your current stats",
-	Aliases: []string{"stats", "about"},
+	Aliases: []string{"stats"},
 	Long:    `returns the /overview endpoint`,
 	Run: func(cmd *cobra.Command, args []string) {
 
@@ -134,6 +134,32 @@ var entryCmd = &cobra.Command{
 		HandleError(err)
 
 		PrintResponse(*resp)
+
+	},
+}
+
+var organizationCmd = &cobra.Command{
+	Use:     "organization",
+	Short:   "get organization details",
+	Aliases: []string{"organisation", "org"},
+	Long:    `returns the details of the organization as authorized by your token`,
+	Run: func(cmd *cobra.Command, args []string) {
+
+		api := GetAPI()
+
+		resp := new(OrgResponse)
+
+		_, err := api.Res("organization/status", resp).Get()
+		HandleError(err)
+
+		table := clitable.New()
+		for k, v := range *resp {
+			if k == 0 {
+				table.AddRow(getStructTags(v)...)
+			}
+			table.AddRow(getStructVals(v)...)
+		}
+		table.Print()
 
 	},
 }
@@ -342,6 +368,8 @@ func init() {
 	timeCmd.Flags().StringP("date", "d", "", "enter the date that you want to look for details of. If left blank will use todays date")
 
 	timeCmd.AddCommand(entryCmd)
+
+	RootCmd.AddCommand(organizationCmd)
 
 	RootCmd.AddCommand(absencesCmd)
 	absencesCmd.Flags().String("year", "", "the year to look for")

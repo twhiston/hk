@@ -61,6 +61,17 @@ commands:
       index:
         arg: 0
         required: true
+    - id: organization
+      aliases:
+        - organisation
+        - org
+      type: get
+      description: get organization details
+      long: returns the details of the organization as authorized by your token
+      path: organization/status
+      responseType: OrgResponse
+      hasResponse: true
+      array: true   
     - id: absences
       type: get
       description: Get absences for a specific year

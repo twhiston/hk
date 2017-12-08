@@ -119,3 +119,12 @@ type AbsenceResponse struct {
 	User                    User      `json:"user"`
 	TimeType                TimerType `json:"time_type"`
 }
+
+type OrgUser struct {
+	User          User `json:"user"`
+	FirstHalfDay  bool `json:"absent_first_half_day"`
+	SecondHalfDay bool `json:"absent_second_half_day"`
+	TimerRunning  bool `json:"has_timer_running"`
+}
+
+type OrgResponse []OrgUser
