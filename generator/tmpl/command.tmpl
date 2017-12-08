@@ -1,6 +1,9 @@
 var {{ .ID }}Cmd = &cobra.Command{
 	Use:   "{{ .ID }}",
 	Short: "{{ .Description }}",
+	{{- if .Aliases }}
+	Aliases: []string{ "{{ StringsJoin .Aliases "\", \"" }}" },
+	{{ end -}}
 	Long:  `{{ .Long }}`,
 	Run: func(cmd *cobra.Command, args []string) {
 

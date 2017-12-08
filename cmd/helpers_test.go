@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"github.com/spf13/viper"
-	"io"
 	"log"
 	"math/rand"
 	"os"
@@ -14,47 +13,6 @@ import (
 	"testing"
 	"time"
 )
-
-type TestData struct {
-	Name string `json:"NameTag"`
-	Data string
-}
-
-func TestPrintResponse(t *testing.T) {
-
-	old := os.Stdout // keep backup of the real stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-
-	data := TestData{"Test", "Test Data"}
-	PrintResponse(data)
-
-	//TODO - This behaviour actually kind of sucks but its to do with the 3rd party lib. Swap it out later or fix it
-	expected := `+--------+----------+
-|NameTag |
-+--------+----------+
-|Test    |Test Data |
-+--------+----------+
-`
-
-	outC := make(chan string)
-	// copy the output in a separate goroutine so printing can't block indefinitely
-	go func() {
-		var buf bytes.Buffer
-		io.Copy(&buf, r)
-		outC <- buf.String()
-	}()
-
-	// back to normal state
-	w.Close()
-	os.Stdout = old // restoring the real stdout
-	out := <-outC
-
-	if out != expected {
-		t.Error("Print Response did not match expected output\n", expected, "\nactual\n", out)
-	}
-
-}
 
 func TestHandleErrorNil(t *testing.T) {
 	HandleError(nil)

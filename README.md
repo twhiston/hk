@@ -59,3 +59,4 @@ To generate the output simply run `go generate` in the root folder
 ## TODO
 
 - Generate code for command tests
+- hk time -d should take day names as well (is there a library for natural language dates?)

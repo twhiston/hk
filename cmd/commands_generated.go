@@ -10,10 +10,11 @@ import (
 	"io/ioutil"
 )
 
-var statsCmd = &cobra.Command{
-	Use:   "stats",
-	Short: "get your current stats",
-	Long:  `returns the /overview endpoint`,
+var overviewCmd = &cobra.Command{
+	Use:     "overview",
+	Short:   "get your current stats",
+	Aliases: []string{"stats", "about"},
+	Long:    `returns the /overview endpoint`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
@@ -30,8 +31,7 @@ var statsCmd = &cobra.Command{
 
 var timerCmd = &cobra.Command{
 	Use:   "timer",
-	Short: "Do things with timers",
-	Long:  `Get the current timer, or use subcommands to control timers`,
+	Short: "Do things with timers", Long: `Get the current timer, or use subcommands to control timers`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
@@ -48,8 +48,7 @@ var timerCmd = &cobra.Command{
 
 var typesCmd = &cobra.Command{
 	Use:   "types",
-	Short: "get the types of timer available",
-	Long:  `returns the possible timer options for your hakuna instance, use these id's with timer commands`,
+	Short: "get the types of timer available", Long: `returns the possible timer options for your hakuna instance, use these id's with timer commands`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
@@ -73,8 +72,7 @@ var typesCmd = &cobra.Command{
 
 var projectsCmd = &cobra.Command{
 	Use:   "projects",
-	Short: "get a list of all projects",
-	Long:  ``,
+	Short: "get a list of all projects", Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
@@ -89,8 +87,7 @@ var projectsCmd = &cobra.Command{
 
 var timeCmd = &cobra.Command{
 	Use:   "time",
-	Short: "get time entries",
-	Long:  `get time entries for a specific date`,
+	Short: "get time entries", Long: `get time entries for a specific date`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
@@ -122,8 +119,7 @@ var timeCmd = &cobra.Command{
 
 var entryCmd = &cobra.Command{
 	Use:   "entry",
-	Short: "get a time entry specified by an id",
-	Long:  `returns a specific time entry, which is given as an argument to the command`,
+	Short: "get a time entry specified by an id", Long: `returns a specific time entry, which is given as an argument to the command`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if len(args) < (0 + 1) {
@@ -144,8 +140,7 @@ var entryCmd = &cobra.Command{
 
 var absencesCmd = &cobra.Command{
 	Use:   "absences",
-	Short: "Get absences for a specific year",
-	Long:  `If no year is supplied will default to the current year`,
+	Short: "Get absences for a specific year", Long: `If no year is supplied will default to the current year`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
@@ -177,8 +172,7 @@ var absencesCmd = &cobra.Command{
 
 var startCmd = &cobra.Command{
 	Use:   "start",
-	Short: "Starts a new timer",
-	Long:  `Creates a new running timer starting from now`,
+	Short: "Starts a new timer", Long: `Creates a new running timer starting from now`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
@@ -205,8 +199,7 @@ var startCmd = &cobra.Command{
 
 var createCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create a time entry in the calendar",
-	Long:  ``,
+	Short: "Create a time entry in the calendar", Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
@@ -235,8 +228,7 @@ var createCmd = &cobra.Command{
 
 var editCmd = &cobra.Command{
 	Use:   "edit",
-	Short: "Edit a time entry",
-	Long:  ``,
+	Short: "Edit a time entry", Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if len(args) < (0 + 1) {
@@ -267,8 +259,7 @@ var editCmd = &cobra.Command{
 
 var stopCmd = &cobra.Command{
 	Use:   "stop",
-	Short: "stop a timer",
-	Long:  `stops a timer and optionally sets a stop time`,
+	Short: "stop a timer", Long: `stops a timer and optionally sets a stop time`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
@@ -294,8 +285,7 @@ var stopCmd = &cobra.Command{
 
 var cancelCmd = &cobra.Command{
 	Use:   "cancel",
-	Short: "cancel a timer",
-	Long:  `deletes the currently running timer`,
+	Short: "cancel a timer", Long: `deletes the currently running timer`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		api := GetAPI()
@@ -315,8 +305,7 @@ var cancelCmd = &cobra.Command{
 
 var deleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: "delete a time",
-	Long:  `deletes a time via it's id.`,
+	Short: "delete a time", Long: `deletes a time via it's id.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if len(args) < (0 + 1) {
@@ -341,7 +330,7 @@ var deleteCmd = &cobra.Command{
 //Initialize commands and options
 func init() {
 
-	RootCmd.AddCommand(statsCmd)
+	RootCmd.AddCommand(overviewCmd)
 
 	RootCmd.AddCommand(timerCmd)
 

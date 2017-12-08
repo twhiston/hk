@@ -4,7 +4,9 @@ import:
   - "io/ioutil"
   - "github.com/twhiston/clitable"
 commands:
-    - id: stats
+    - id: overview
+      aliases:
+       - stats
       type: get
       description: get your current stats
       long: returns the /overview endpoint

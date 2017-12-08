@@ -46,6 +46,7 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	log.SetFlags(0)
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hk.yml)")
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "if true is more verbose")

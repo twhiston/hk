@@ -23,6 +23,7 @@ type genDataSet struct {
 type genCommandData struct {
 	Type             string                `yaml:"type"`
 	ID               string                `yaml:"id,omitempty"`
+	Aliases          []string              `yaml:"aliases,omitempty"`
 	Parent           string                `yaml:"parent,omitempty"`
 	ArrayResponse    bool                  `yaml:"array,omitempty"`
 	Description      string                `yaml:"description,omitempty"`
@@ -69,7 +70,6 @@ func main() {
 	flag.StringVar(&pkgFlag, "pkg", "cmd", "package to output generated code in")
 	flag.Parse()
 
-	//TODO - put template is basically post. could refactor this to use the same one?
 	//TODO - optional dynamic generation of payload renderer stubs
 
 	file, err := ioutil.ReadFile("manifest.yml")
@@ -82,7 +82,8 @@ func main() {
 	t := template.New("hk")
 
 	funcMap := template.FuncMap{
-		"Title": strings.Title,
+		"Title":       strings.Title,
+		"StringsJoin": strings.Join,
 	}
 	t.Funcs(funcMap)
 
