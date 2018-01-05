@@ -56,14 +56,7 @@ var {{ .ID }}Cmd = &cobra.Command{
 
 		{{ if .HasResponse -}}
 		{{- if .ArrayResponse }}
-		table := clitable.New()
-        for k, v := range *resp {
-        	if k == 0 {
-        		table.AddRow(getStructTags(v)...)
-        	}
-        	table.AddRow(getStructVals(v)...)
-        }
-        table.Print()
+		PrintArrayResponse(*resp)
 		{{- else }}
 		PrintResponse(*resp)
 		{{ end }}

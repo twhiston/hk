@@ -26,7 +26,14 @@ hakuna:
 ```
 
 Once these details are provided hk will be able to connect to Hakuna.
-Note that some commands will not be available unless you have an organization api key
+Note that some commands will not be available unless you have an organization api key.
+
+You cn additionally add the key
+```
+vertical_print: true
+```
+to the config file to get vertical table printouts, which is useful if
+on a small monitor or viewing a very large set of data which breaks the terminal line
 
 ## Commands
 
@@ -58,5 +65,5 @@ To generate the output simply run `go generate` in the root folder
 
 ## TODO
 
-- Generate code for command tests
+- work out how to do org keys better
 - hk time -d should take day names as well (is there a library for natural language dates?)

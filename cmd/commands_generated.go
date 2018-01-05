@@ -6,7 +6,6 @@ package cmd
 import (
 	"errors"
 	"github.com/spf13/cobra"
-	"github.com/twhiston/clitable"
 	"io/ioutil"
 )
 
@@ -58,14 +57,7 @@ var typesCmd = &cobra.Command{
 		_, err := api.Res("time_types", resp).Get()
 		HandleError(err)
 
-		table := clitable.New()
-		for k, v := range *resp {
-			if k == 0 {
-				table.AddRow(getStructTags(v)...)
-			}
-			table.AddRow(getStructVals(v)...)
-		}
-		table.Print()
+		PrintArrayResponse(*resp)
 
 	},
 }
@@ -105,14 +97,7 @@ var timeCmd = &cobra.Command{
 		_, err := api.Res("time_entries", resp).Get(querystring)
 		HandleError(err)
 
-		table := clitable.New()
-		for k, v := range *resp {
-			if k == 0 {
-				table.AddRow(getStructTags(v)...)
-			}
-			table.AddRow(getStructVals(v)...)
-		}
-		table.Print()
+		PrintArrayResponse(*resp)
 
 	},
 }
@@ -152,14 +137,7 @@ var organizationCmd = &cobra.Command{
 		_, err := api.Res("organization/status", resp).Get()
 		HandleError(err)
 
-		table := clitable.New()
-		for k, v := range *resp {
-			if k == 0 {
-				table.AddRow(getStructTags(v)...)
-			}
-			table.AddRow(getStructVals(v)...)
-		}
-		table.Print()
+		PrintArrayResponse(*resp)
 
 	},
 }
@@ -184,14 +162,7 @@ var absencesCmd = &cobra.Command{
 		_, err := api.Res("absences", resp).Get(querystring)
 		HandleError(err)
 
-		table := clitable.New()
-		for k, v := range *resp {
-			if k == 0 {
-				table.AddRow(getStructTags(v)...)
-			}
-			table.AddRow(getStructVals(v)...)
-		}
-		table.Print()
+		PrintArrayResponse(*resp)
 
 	},
 }

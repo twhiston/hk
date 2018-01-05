@@ -70,9 +70,6 @@ func TestTestConfig(t *testing.T) {
 	if err != nil {
 		t.Fatal("Valid config should not return an error")
 	}
-	if buf.String() != "Domain: test\n" {
-		t.Fatal("incorrect log output", buf.String())
-	}
 
 }
 

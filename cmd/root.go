@@ -50,8 +50,6 @@ func init() {
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hk.yml)")
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "if true is more verbose")
-
-	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
