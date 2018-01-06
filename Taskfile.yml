@@ -1,0 +1,79 @@
+all:
+  cmds:
+    - task: deps
+    - task: lint
+    - task: build
+
+deps:
+  cmds:
+    - dep ensure
+
+lint:
+  cmds:
+    - gometalinter --vendor ./...
+    - hadolint Dockerfile
+
+default:
+  cmds:
+    - task: all
+
+build:
+  cmds:
+    - task: linux
+    - task: darwin
+    - task: windows
+
+linux:
+  cmds:
+   - task: linux:386
+   - task: linux:amd64
+   - task: linux:arm
+   - task: linux:arm64
+
+darwin:
+  cmds:
+    - task: darwin:amd64
+
+windows:
+  cmds:
+    - task: windows:386
+    - task: windows:amd64
+
+linux:386:
+  cmds:
+    - task: doBuild
+      vars: {GOOS: "linux", GOARCH: "386"}
+
+linux:amd64:
+  cmds:
+    - task: doBuild
+      vars: {GOOS: "linux", GOARCH: "amd64"}
+
+linux:arm:
+  cmds:
+    - task: doBuild
+      vars: {GOOS: "linux", GOARCH: "arm"}
+
+linux:arm64:
+  cmds:
+    - task: doBuild
+      vars: {GOOS: "linux", GOARCH: "arm64"}
+
+darwin:amd64:
+  cmds:
+    - task: doBuild
+      vars: {GOOS: "darwin", GOARCH: "amd64"}
+
+windows:386:
+  cmds:
+    - task: doBuild
+      vars: {GOOS: "windows", GOARCH: "386", EXE: true}
+
+windows:amd64:
+  cmds:
+    - task: doBuild
+      vars: {GOOS: "windows", GOARCH: "amd64", EXE: true}
+
+doBuild:
+  cmds:
+   - GOOS={{ .GOOS }} GOARCH={{ .GOARCH }} go build -o {{ .BUILD_FOLDER }}/{{ .APP }}-{{ .GOOS }}-{{ .GOARCH }}{{ if .EXE }}.exe{{end}}

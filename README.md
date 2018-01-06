@@ -10,7 +10,8 @@ CLI tools for hakuna.ch
 
 `go get -u github.com/twhiston/hk`
 
-or download the binary directly from the releases page
+or download the binary directly from the releases page for your architecture,
+rename it to `hk` and add it to your path
 
 ## Usage
 

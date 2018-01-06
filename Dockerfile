@@ -1,3 +1,3 @@
 FROM tomwhiston/micro-golang:codacy
 
-MAINTAINER Tom Whiston <tom.whiston@gmail.com>
+LABEL maintainer="Tom Whiston <tom.whiston@gmail.com>"
