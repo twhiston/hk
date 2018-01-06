@@ -12,8 +12,8 @@ import (
 	"net/http"
 )
 
-//GetAPI returns a gopencils resource ready configured to make calls on
-func GetAPI() *gopencils.Resource {
+//getAPI returns a gopencils resource ready configured to make calls on
+func getAPI() *gopencils.Resource {
 	domain := viper.GetString("hakuna.domain")
 	api := gopencils.Api("https://" + domain + ".hakuna.ch/api/v1")
 	api.Headers = make(http.Header, 2)
@@ -22,7 +22,7 @@ func GetAPI() *gopencils.Resource {
 	return api
 }
 
-func PrintArrayResponse(resp interface{}) {
+func printArrayResponse(resp interface{}) {
 
 	switch reflect.TypeOf(resp).Kind() {
 	case reflect.Slice:
@@ -37,6 +37,7 @@ func PrintArrayResponse(resp interface{}) {
 	}
 }
 
+//Internal function never called directly by the commands
 func printNormalArray(resp interface{}, table *clitable.Table) {
 	s := reflect.ValueOf(resp)
 	for i := 0; i < s.Len(); i++ {
@@ -47,6 +48,7 @@ func printNormalArray(resp interface{}, table *clitable.Table) {
 	}
 }
 
+//Internal function never called directly by the commands
 func printVerticalArray(resp interface{}, table *clitable.Table) {
 
 	s := reflect.ValueOf(resp)
@@ -70,7 +72,7 @@ func printVerticalArray(resp interface{}, table *clitable.Table) {
 }
 
 //PrintResponse takes some kind of API response and tries to render it as a table
-func PrintResponse(resp interface{}) {
+func printResponse(resp interface{}) {
 	table := clitable.New()
 	vp := viper.GetBool("vertical_print")
 	if vp {
@@ -81,6 +83,7 @@ func PrintResponse(resp interface{}) {
 	table.Print()
 }
 
+//Internal function never called directly by the commands
 func printNormalTable(resp interface{}, table *clitable.Table) {
 	//Get api response tags for the header
 	table.AddRow(getStructTags(resp)...)
@@ -88,6 +91,7 @@ func printNormalTable(resp interface{}, table *clitable.Table) {
 	table.AddRow(getStructVals(resp)...)
 }
 
+//Internal function never called directly by the commands
 func printVerticalTable(resp interface{}, table *clitable.Table) {
 	tags := getStructTags(resp)
 	data := getStructVals(resp)
@@ -105,7 +109,10 @@ func getStructVals(resp interface{}) []string {
 			a := getStructVals(val.Field(i).Interface())
 			data = append(data, a...)
 		} else {
-			data = append(data, fmt.Sprintf("%v", val.Field(i).Interface()))
+			tag := val.Type().Field(i).Tag.Get("json")
+			if tag != "" {
+				data = append(data, fmt.Sprintf("%v", val.Field(i).Interface()))
+			}
 		}
 	}
 	return data
@@ -123,7 +130,6 @@ func getStructTags(resp interface{}) []string {
 			if tag != "" {
 				data = append(data, tag)
 			}
-
 		}
 	}
 	return data

@@ -7,6 +7,9 @@ type User struct {
 	Teams []string `json:"teams"`
 }
 
+//UserResponse is a slice of users
+type UserResponse []User
+
 //TimerType represents a timer type in Hakuna
 type TimerType struct {
 	ID       int    `json:"id"`
@@ -120,6 +123,7 @@ type AbsenceResponse struct {
 	TimeType                TimerType `json:"time_type"`
 }
 
+//OrgUser represents a user in an organization
 type OrgUser struct {
 	User          User `json:"user"`
 	FirstHalfDay  bool `json:"absent_first_half_day"`
@@ -127,4 +131,5 @@ type OrgUser struct {
 	TimerRunning  bool `json:"has_timer_running"`
 }
 
+//OrgResponse is a slice of org users
 type OrgResponse []OrgUser

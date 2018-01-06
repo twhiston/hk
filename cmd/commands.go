@@ -15,13 +15,15 @@ var todayCmd = &cobra.Command{
 	Use:   "today",
 	Short: "get your stats for today",
 	Long: `The today command will print a combination of the time and timer commands,
-This returns all times for the current day, including the running timer and a sum of the time values`,
+This returns all times for the current day, including the running timer and a sum of the time values.
+
+The today command does not support user impersonation`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		//TODO does not really work at the moment as both structs have different columns
 		//This means that we need to actually extract the duration data and present it in a different way.
 		//Should be easy right :P
-		api := GetAPI()
+		api := getAPI()
 		resp := new(TimeEntryResponseArray)
 
 		querystring := make(map[string]string, 1)

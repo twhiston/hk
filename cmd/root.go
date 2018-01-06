@@ -26,6 +26,7 @@ import (
 
 var cfgFile string
 var verbose bool
+var impersonate string
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -50,6 +51,7 @@ func init() {
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hk.yml)")
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "if true is more verbose")
+	RootCmd.PersistentFlags().StringVarP(&impersonate, "user", "u", "", "execute the command as another user")
 }
 
 // initConfig reads in config file and ENV variables if set.

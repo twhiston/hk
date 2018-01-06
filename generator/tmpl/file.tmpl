@@ -24,9 +24,9 @@ func init() {
 {{ if not $element.Parent }}
     RootCmd.AddCommand({{ $element.ID }}Cmd)
 {{- else }}
-    {{ $element.Parent }}Cmd.AddCommand({{ $element.ID }}Cmd)
+    {{ $element.Parent }}Cmd.AddCommand( {{ if $element.Parent }}{{ $element.Parent }}{{ end }}{{ $element.ID }}Cmd)
 {{- end }}
-{{ range $i, $param := $element.Params }}    {{ $element.ID }}Cmd.{{ if $param.Persistent }}Persistent{{ end }}Flags().{{ $param.Type | Title }}{{ if $param.Short }}P{{ end }}("{{ $param.Name }}",{{ if $param.Short }} "{{ $param.Short }}",{{ end }} {{ $param.Value }}, "{{ $param.Usage }}")
+{{ range $i, $param := $element.Params }}    {{ if $element.Parent }}{{ $element.Parent }}{{ end }}{{ $element.ID }}Cmd.{{ if $param.Persistent }}Persistent{{ end }}Flags().{{ $param.Type | Title }}{{ if $param.Short }}P{{ end }}("{{ $param.Name }}",{{ if $param.Short }} "{{ $param.Short }}",{{ end }} {{ $param.Value }}, "{{ $param.Usage }}")
 {{ end -}}
 {{- end -}}
 {{ end }}

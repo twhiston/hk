@@ -102,7 +102,7 @@ func main() {
 	err = t.ExecuteTemplate(f, "file.tmpl", &dataset)
 	cmd.HandleError(err)
 
-	formatter := exec.Command("gofmt", "-s", "-w", "cmd/commands_generated.go")
+	formatter := exec.Command("gofmt", "-s", "-w", "cmd/commands_generated.go") //nolint
 	cmd.HandleError(formatter.Run())
 
 }

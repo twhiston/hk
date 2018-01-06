@@ -37,8 +37,8 @@ on a small monitor or viewing a very large set of data which breaks the terminal
 
 ## Commands
 
-Commands currently cover a large chunk of the api and are described in the manifest.yml file.
-Organizational commands and acting as other users are not supported currently
+Commands currently cover the entire api and are described in the manifest.yml file.
+Acting as other users are not supported currently
 
 use `hk --help` or `hk {command} --help` to find out options and further sub-commands
 
@@ -50,7 +50,7 @@ The time command has some special case options to make it more useful:
 
 ## Additional Commands
 
-In addition to the generated commands there are custom commands that dont only return the API functionality
+In addition to the generated commands there are custom commands that don't only return the API functionality
 
 ### today
 
@@ -64,6 +64,4 @@ All the commands are generated from the manifest.yml file using the code in the 
 To generate the output simply run `go generate` in the root folder
 
 ## TODO
-
-- work out how to do org keys better
 - hk time -d should take day names as well (is there a library for natural language dates?)

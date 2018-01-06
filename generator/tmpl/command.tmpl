@@ -1,10 +1,11 @@
-var {{ .ID }}Cmd = &cobra.Command{
+var {{ if .Parent }}{{ .Parent }}{{ end }}{{ .ID }}Cmd = &cobra.Command{
 	Use:   "{{ .ID }}",
 	Short: "{{ .Description }}",
-	{{- if .Aliases }}
+	{{ if .Aliases -}}
 	Aliases: []string{ "{{ StringsJoin .Aliases "\", \"" }}" },
 	{{ end -}}
 	Long:  `{{ .Long }}`,
+	{{ if .Path -}}
 	Run: func(cmd *cobra.Command, args []string) {
 
 	    {{ if .Index.Required }}
@@ -13,7 +14,7 @@ var {{ .ID }}Cmd = &cobra.Command{
 	    }
 	    {{ end }}
 
-		api := GetAPI()
+		api := getAPI()
 		{{ if .ResponseType }}
 		resp := new({{ .ResponseType }})
 		{{ end }}
@@ -22,13 +23,16 @@ var {{ .ID }}Cmd = &cobra.Command{
 		payload := new({{ .PayloadType }})
 		{{ end }}
 
-		{{- if and (.Params) (and (ne .Type "post") (ne .Type "patch")) }}
-		querystring := make(map[string]string, {{ len .Params }})
+		{{- if and (ne .Type "post") (and (ne .Type "patch") (ne .Type "put")) }}
+		querystring := make(map[string]string)
 		{{ range $k, $v := .Params -}}
         value, e := cmd.{{ if $v.Persistent }}Persistent{{ end }}Flags().Get{{ $v.Type | Title }}("{{ $v.Name }}")
         HandleError(e)
         querystring["{{ $v.Name }}"] = value
         {{ end }}
+         if impersonate != "" {
+            querystring["user_id"] = impersonate
+         }
 		{{- end }}
 
 		{{ if .ParameterHandler }}
@@ -41,8 +45,15 @@ var {{ .ID }}Cmd = &cobra.Command{
         err := {{ .PostDataHandler}}(cmd, args, payload)
         HandleError(err)
         {{ end -}}
-
-		{{ if  gt .ExpectedStatus 0 }}r{{ else }}_{{ end }}, err := api.Res("{{ .Path }}" {{ if .ResponseType }}, resp{{ end }}).{{ if .Index.Required }}Id(args[{{ .Index.Arg }}]).{{ end }}{{ .Type | Title }}({{ if and (.Params) (and (ne .Type "post") (ne .Type "patch")) }}querystring{{ end }}{{ if .PayloadType }}payload{{ end }})
+        res := api.Res("{{ .Path }}" {{ if .ResponseType }}, resp{{ end }})
+        {{- if or (eq .Type "post") (or (eq .Type "patch") (eq .Type "put") ) }}
+        if impersonate != "" {
+            querystring := make(map[string]string, 1)
+            querystring["user_id"] = impersonate
+            res.SetPayload(querystring)
+        }
+        {{- end }}
+		{{ if  gt .ExpectedStatus 0 }}r{{ else }}_{{ end }}, err := res.{{ if .Index.Required }}Id(args[{{ .Index.Arg }}]).{{ end }}{{ .Type | Title }}({{ if and (ne .Type "post") (and (ne .Type "patch") (ne .Type "put")) }}querystring{{ end }}{{ if .PayloadType }}payload{{ end }})
 		HandleError(err)
 
 		{{ if gt .ExpectedStatus 0 }}
@@ -56,11 +67,12 @@ var {{ .ID }}Cmd = &cobra.Command{
 
 		{{ if .HasResponse -}}
 		{{- if .ArrayResponse }}
-		PrintArrayResponse(*resp)
+		printArrayResponse(*resp)
 		{{- else }}
-		PrintResponse(*resp)
+		printResponse(*resp)
 		{{ end }}
 		{{- end }}
 
 	},
+	{{ end -}}
 }
