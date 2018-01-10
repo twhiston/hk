@@ -29,7 +29,7 @@ hakuna:
 Once these details are provided hk will be able to connect to Hakuna.
 Note that some commands will not be available unless you have an organization api key.
 
-You cn additionally add the top-level key (not nested under `hakuna:`)
+You can additionally add the top-level key (not nested under `hakuna:`)
 ```
 vertical_print: true
 ```
