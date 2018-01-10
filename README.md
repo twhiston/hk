@@ -29,12 +29,12 @@ hakuna:
 Once these details are provided hk will be able to connect to Hakuna.
 Note that some commands will not be available unless you have an organization api key.
 
-You cn additionally add the key
+You can additionally add the top-level key (not nested under `hakuna:`)
 ```
 vertical_print: true
 ```
 to the config file to get vertical table printouts, which is useful if
-on a small monitor or viewing a very large set of data which breaks the terminal line
+on a small monitor or viewing a very large set of data which breaks the terminal line.
 
 ## Commands
 
