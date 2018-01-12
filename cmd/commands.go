@@ -3,8 +3,10 @@ package cmd
 // This file was NOT auto generated as it contains commands that can not easily be composed in a template
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/twhiston/clitable"
+	"log"
 	"strconv"
 	"time"
 )
@@ -20,9 +22,6 @@ This returns all times for the current day, including the running timer and a su
 The today command does not support user impersonation`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		//TODO does not really work at the moment as both structs have different columns
-		//This means that we need to actually extract the duration data and present it in a different way.
-		//Should be easy right :P
 		api := getAPI()
 		resp := new(TimeEntryResponseArray)
 
@@ -55,8 +54,65 @@ The today command does not support user impersonation`,
 	},
 }
 
+var timerNewCmd = &cobra.Command{
+	Use:   "new",
+	Short: "creates a new timer even if a timer is currently running",
+	Long: `The new command will create a new timer even if one is currently running by executing stop, then start.
+Does not support user aliasing`,
+	Run: func(cmd *cobra.Command, args []string) {
+
+		skipStatusCheck = true
+		childrenCmds := cmd.Parent().Commands()
+		for _, v := range childrenCmds {
+			if v.Use == "stop" {
+				log.Println("Stopping Current Running Timer (if existent)")
+				v.Run(v, args)
+				break
+			}
+		}
+
+		for _, v := range childrenCmds {
+			if v.Use == "start" {
+				log.Println("Starting new timer")
+				v.Run(v, args)
+				break
+			}
+		}
+
+	},
+}
+
+var timerRunningCmd = &cobra.Command{
+	Use:   "running",
+	Short: "returns true if a timer is running or false",
+	Run: func(cmd *cobra.Command, args []string) {
+
+		api := getAPI()
+
+		resp := new(TimerResponse)
+
+		querystring := make(map[string]string)
+
+		if impersonate != "" {
+			querystring["user_id"] = impersonate
+		}
+
+		res := api.Res("timer", resp)
+		_, err := res.Get(querystring)
+		HandleError(err)
+		output := "false"
+		if resp.DurationSeconds != 0 {
+			output = "true"
+		}
+		fmt.Println(output)
+
+	},
+}
+
 //Initialize commands and options
 func init() {
 
 	RootCmd.AddCommand(todayCmd)
+	timerCmd.AddCommand(timerNewCmd)
+	timerCmd.AddCommand(timerRunningCmd)
 }

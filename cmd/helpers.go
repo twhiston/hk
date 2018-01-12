@@ -10,6 +10,7 @@ import (
 	"github.com/twhiston/clitable"
 	"log"
 	"net/http"
+	"strings"
 )
 
 //getAPI returns a gopencils resource ready configured to make calls on
@@ -108,6 +109,11 @@ func getStructVals(resp interface{}) []string {
 		if val.Type().Field(i).Type.Kind() == reflect.Struct {
 			a := getStructVals(val.Field(i).Interface())
 			data = append(data, a...)
+		} else if val.Type().Field(i).Type.Kind() == reflect.Slice {
+			slice, ok := val.Field(i).Interface().([]string)
+			if ok {
+				data = append(data, strings.Join(slice, " , "))
+			}
 		} else {
 			tag := val.Type().Field(i).Tag.Get("json")
 			if tag != "" {

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+export COMMIT_ID=${CI_COMMIT_ID}
