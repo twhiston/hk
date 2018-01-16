@@ -27,6 +27,7 @@ import (
 var cfgFile string
 var verbose bool
 var impersonate string
+var skipStatusCheck bool
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -72,6 +73,7 @@ func initConfig() {
 		viper.SetConfigName(".hk")
 	}
 
+	viper.SetEnvPrefix("HK")
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.

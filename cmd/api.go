@@ -25,6 +25,12 @@ type Project struct {
 	Archived bool   `json:"archived"`
 }
 
+//ProjectResponse represents an slice of  project responses in Hakuna
+type ProjectResponse []struct {
+	Project
+	Teams []string `json:"teams"`
+}
+
 //StatsResponse represents your current stats
 type StatsResponse struct {
 	Overtime        string `json:"overtime"`
@@ -75,14 +81,6 @@ type TimerTypesResponse []struct {
 	Type     string `json:"type"`
 	Archived bool   `json:"archived"`
 	Exclude  bool   `json:"exclude_from calculations"`
-}
-
-//ProjectResponse represents an slice of  project responses in Hakuna
-type ProjectResponse []struct {
-	ID       int      `json:"id"`
-	Name     string   `json:"name"`
-	Archived bool     `json:"archived'"`
-	Teams    []string `json:"teams,omitempty"`
 }
 
 //TimerStartPayload is passed when starting a new timer

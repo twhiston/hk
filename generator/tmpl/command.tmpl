@@ -57,7 +57,7 @@ var {{ if .Parent }}{{ .Parent }}{{ end }}{{ .ID }}Cmd = &cobra.Command{
 		HandleError(err)
 
 		{{ if gt .ExpectedStatus 0 }}
-                if r.Raw.StatusCode != {{ .ExpectedStatus }} {
+                if r.Raw.StatusCode != {{ .ExpectedStatus }} && !skipStatusCheck {
                     defer deferredBodyClose(r)
                 	bodyBytes, err := ioutil.ReadAll(r.Raw.Body)
                 	HandleError(err)

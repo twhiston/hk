@@ -9,7 +9,15 @@ import (
 
 func TestFillStartTimerData(t *testing.T) {
 
+	parent := new(cobra.Command)
 	cmd := new(cobra.Command)
+	parent.AddCommand(cmd)
+
+	cmd.Parent().PersistentFlags().Int("id", 1, "")
+	cmd.Parent().PersistentFlags().Int("project", 23, "")
+	cmd.Parent().PersistentFlags().String("note", "", "")
+	cmd.Parent().PersistentFlags().String("start", "23:11", "")
+
 	var args []string
 
 	payload := new(TimerStartPayload)
@@ -27,7 +35,7 @@ func TestFillStartTimerData(t *testing.T) {
 
 func TestTimeParamHandler(t *testing.T) {
 
-	todayStrings := []string{"", "t", "today"}
+	todayStrings := []string{"", "today"}
 	today := time.Now().Local().Format("2006-01-02")
 	params := make(map[string]string, 1)
 
@@ -42,7 +50,7 @@ func TestTimeParamHandler(t *testing.T) {
 		}
 	}
 
-	yesterdayStrings := []string{"y", "yesterday"}
+	yesterdayStrings := []string{"yesterday"}
 	yesterday := time.Now().Local().AddDate(0, 0, -1).Format("2006-01-02")
 
 	for _, v := range yesterdayStrings {
@@ -52,7 +60,7 @@ func TestTimeParamHandler(t *testing.T) {
 			t.Fatal(err)
 		}
 		if params["date"] != yesterday {
-			t.Fatal("Passing no value to time parameter handler should return yesterdays date")
+			t.Fatal("Passing no value to time parameter handler should return yesterdays date", params["date"], yesterday)
 		}
 	}
 
@@ -79,82 +87,78 @@ func TestAbsenceParamHandler(t *testing.T) {
 // nolint
 func TestFillTimeEntryData(t *testing.T) {
 
-	startVal := "2017-05-10T23:23"
-	endVal := "2017-06-10T12:02"
+	startVal := "monday 3pm"
+	endVal := "monday 18:15"
 	timeID := 1
 	//fillTimeEntryData(cmd *cobra.Command, args []string, payload *TimeEntryPayload) error
+	parent := new(cobra.Command)
 	cmd := new(cobra.Command)
+	parent.AddCommand(cmd)
 	var args []string
 	payload := new(TimeEntryPayload)
 
 	err := fillRequiredTimeEntryData(cmd, args, payload)
 	if err == nil || err.Error() != "flag accessed but not defined: start" {
-		t.Fatal("Must have start flag defined")
+		t.Fatal("Must have start flag defined", err.Error())
 	}
 
-	cmd.Flags().String("start", "", "")
+	cmd.Parent().PersistentFlags().String("start", "bingbong", "")
 	err = fillRequiredTimeEntryData(cmd, args, payload)
-	_, ok := err.(*time.ParseError)
-	if !ok {
+	if err == nil {
 		t.Fatal("invalid time format strings should fail validation")
 	}
 
 	//This time format should pass
-	cmd.Flags().Set("start", startVal)
+	cmd.Parent().PersistentFlags().Set("start", startVal)
 
 	err = fillRequiredTimeEntryData(cmd, args, payload)
 	if err.Error() != "flag accessed but not defined: end" {
 		t.Fatal(err)
 	}
 
-	cmd.Flags().String("end", "", "")
+	cmd.Parent().PersistentFlags().String("end", "", "")
 	err = fillRequiredTimeEntryData(cmd, args, payload)
-	_, ok = err.(*time.ParseError)
-	if !ok {
+	if err == nil {
 		t.Fatal("invalid time format strings should fail validation")
 	}
 
-	cmd.Flags().Set("end", endVal)
+	cmd.Parent().PersistentFlags().Set("end", endVal)
 
 	err = fillRequiredTimeEntryData(cmd, args, payload)
 	if err.Error() != "flag accessed but not defined: time-id" {
 		t.Fatal(err)
 	}
 
-	cmd.Flags().Int("time-id", 0, "")
+	cmd.Parent().PersistentFlags().Int("time-id", 0, "")
 	err = fillRequiredTimeEntryData(cmd, args, payload)
 	if err.Error() != "time id cannot be less than 1" {
 		t.Fatal(err)
 	}
 
-	cmd.Flags().Set("time-id", strconv.Itoa(timeID))
+	cmd.Parent().PersistentFlags().Set("time-id", strconv.Itoa(timeID))
 
 	err = fillRequiredTimeEntryData(cmd, args, payload)
-	if err.Error() != "flag accessed but not defined: project-id" {
+	if err.Error() != "flag accessed but not defined: project" {
 		t.Fatal(err)
 	}
 
-	cmd.Flags().Int("project-id", 0, "optional project id")
+	cmd.Parent().PersistentFlags().Int("project", 0, "optional project id")
 
 	err = fillRequiredTimeEntryData(cmd, args, payload)
 	if err.Error() != "flag accessed but not defined: note" {
 		t.Fatal(err)
 	}
-	cmd.Flags().String("note", "", "optional note to add to the entry")
+	cmd.Parent().PersistentFlags().String("note", "", "optional note to add to the entry")
 
 	err = fillRequiredTimeEntryData(cmd, args, payload)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if payload.Starts != startVal || payload.Ends != endVal || payload.TimeType != timeID {
-		t.Fatal("unexpected payload values", payload)
-	}
-
 	pid := 23
 	note := "Testing a note"
-	cmd.Flags().Set("note", note)
-	cmd.Flags().Set("project-id", strconv.Itoa(pid))
+	cmd.Parent().PersistentFlags().Set("note", note)
+	cmd.Parent().PersistentFlags().Set("project", strconv.Itoa(pid))
 	err = fillRequiredTimeEntryData(cmd, args, payload)
 	if err != nil {
 		t.Fatal(err)

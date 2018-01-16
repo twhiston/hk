@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/AlekSi/pointer"
+  packages = ["."]
+  revision = "08a25bac605b3fcb6cc27f3917b2c2c87451963d"
+  version = "v1.0.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/bndr/gopencils"
   packages = ["."]
@@ -44,10 +50,22 @@
   revision = "06020f85339e21b2478f756a78e295255ffa4d6a"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/olebedev/when"
+  packages = [".","rules","rules/common","rules/en","rules/ru"]
+  revision = "53693fbb59a88d8eb5a214820c5ec1ea76d2460c"
+
+[[projects]]
   name = "github.com/pelletier/go-toml"
   packages = ["."]
   revision = "16398bac157da96aa88f98a2df640c7f32af1da2"
   version = "v1.0.1"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/spf13/afero"
@@ -112,6 +130,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a9c47f9c7493a66243998175f9db6e89278eb8fccdfb4721bf56e432399a2e35"
+  inputs-digest = "0dcb90fc2129156bb486e2d678d1255c061217672496c809cd80ea092900512b"
   solver-name = "gps-cdcl"
   solver-version = 1

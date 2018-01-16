@@ -1,12 +1,17 @@
 all:
   cmds:
     - task: deps
+    - task: gen
     - task: lint
     - task: build
 
 deps:
   cmds:
     - dep ensure
+
+gen:
+  cmds:
+    - go generate
 
 lint:
   cmds:
